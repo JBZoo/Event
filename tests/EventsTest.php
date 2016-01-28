@@ -16,6 +16,7 @@
 namespace JBZoo\PHPUnit;
 
 use JBZoo\Event\EventManager;
+use JBZoo\Event\Exception;
 
 /**
  * Class ManagerTest
@@ -23,15 +24,15 @@ use JBZoo\Event\EventManager;
  */
 class EventsTest extends PHPUnit
 {
-    function testInit()
+    public function testInit()
     {
-        $events = new EventManager();
-        $this->assertInstanceOf('JBZoo\\Event\\EventManager', $events);
+        $eManager = new EventManager();
+        $this->assertInstanceOf('JBZoo\\Event\\EventManager', $eManager);
     }
 
-    function testListeners()
+    public function testListeners()
     {
-        $events = new EventManager();
+        $eManager = new EventManager();
 
         $callback1 = function () {
         };
@@ -39,122 +40,123 @@ class EventsTest extends PHPUnit
         $callback2 = function () {
         };
 
-        $events->on('foo', $callback1, 200);
-        $events->on('foo', $callback2, 100);
+        $eManager->on('foo', $callback1, 200);
+        $eManager->on('foo', $callback2, 100);
 
-        is([$callback2, $callback1], $events->listeners('foo'));
+        is([$callback2, $callback1], $eManager->listeners('foo'));
     }
 
     /**
      * @depends testInit
      */
-    function testHandleEvent()
+    public function testHandleEvent()
     {
         $argResult = null;
 
-        $events = new EventManager();
-        $events->on('foo', function ($arg) use (&$argResult) {
+        $eManager = new EventManager();
+        $eManager->on('foo', function ($arg) use (&$argResult) {
             $argResult = $arg;
         });
 
-        isTrue($events->trigger('foo', ['bar']));
+        isTrue($eManager->trigger('foo', ['bar']));
         is('bar', $argResult);
     }
 
     /**
      * @depends testHandleEvent
      */
-    function testCancelEvent()
+    public function testCancelEvent()
     {
         $argResult = 0;
 
-        $events = new EventManager();
-        $events->on('foo', function () use (&$argResult) {
+        $eManager = new EventManager();
+        $eManager->on('foo', function () use (&$argResult) {
             $argResult = 1;
-            return false;
+            throw new Exception('Something wrong');
         });
 
-        $events->on('foo', function () use (&$argResult) {
+        $eManager->on('foo', function () use (&$argResult) {
             $argResult = 2;
         });
 
-        isFalse($events->trigger('foo', ['bar']));
+        $result = $eManager->trigger('foo', ['bar']);
+        is('Something wrong', $result);
         is(1, $argResult);
     }
 
     /**
      * @depends testCancelEvent
      */
-    function testPriority()
+    public function testPriority()
     {
         $argResult = 0;
 
-        $events = new EventManager();
-        $events->on('foo', function () use (&$argResult) {
+        $eManager = new EventManager();
+        $eManager->on('foo', function () use (&$argResult) {
             $argResult = 1;
-            return false;
+            throw new Exception('Something wrong #1');
         });
 
-        $events->on('foo', function () use (&$argResult) {
+        $eManager->on('foo', function () use (&$argResult) {
             $argResult = 2;
-            return false;
+            throw new Exception('Something wrong #2');
         }, 1);
 
-        isFalse($events->trigger('foo', ['bar']));
+        is('Something wrong #2', $eManager->trigger('foo', ['bar']));
         is(2, $argResult);
     }
 
     /**
      * @depends testPriority
      */
-    function testPriority2()
+    public function testPriority2()
     {
-        $result = [];
-        $events = new EventManager();
+        $result   = [];
+        $eManager = new EventManager();
 
-        $events->on('foo', function () use (&$result) {
+        $eManager->on('foo', function () use (&$result) {
             $result[] = 'a';
         }, 200);
 
-        $events->on('foo', function () use (&$result) {
+        $eManager->on('foo', function () use (&$result) {
             $result[] = 'b';
         }, 50);
 
-        $events->on('foo', function () use (&$result) {
+        $eManager->on('foo', function () use (&$result) {
             $result[] = 'c';
         }, 300);
 
-        $events->on('foo', function () use (&$result) {
+        $eManager->on('foo', function () use (&$result) {
             $result[] = 'd';
         });
 
-        $events->trigger('foo');
+        $eManager->trigger('foo');
 
         is(['b', 'd', 'a', 'c'], $result);
     }
 
-    function testRemoveListener()
+    public function testRemoveListener()
     {
-        $result = false;
-        $events = new EventManager();
+        $result   = false;
+        $eManager = new EventManager();
 
         $callBack = function () use (&$result) {
             $result = true;
         };
 
-        $events->on('foo', $callBack);
+        $eManager->on('foo', $callBack);
 
-        $events->trigger('foo');
+        $eManager->trigger('foo');
         isTrue($result);
 
         $result = false;
-        isTrue($events->removeListener('foo', $callBack));
+        isTrue($eManager->removeListener('foo', $callBack));
 
-        $events->trigger('foo');
+        $eManager->trigger('foo');
         isFalse($result);
     }
 
-    function testRemoveUnknownListener()
+    public function testRemoveUnknownListener()
     {
         $result = false;
 
@@ -162,18 +164,18 @@ class EventsTest extends PHPUnit
             $result = true;
         };
 
-        $events = new EventManager();
-        $events->on('foo', $callBack);
-        $events->trigger('foo');
+        $eManager = new EventManager();
+        $eManager->on('foo', $callBack);
+        $eManager->trigger('foo');
         isTrue($result);
 
         $result = false;
-        isFalse($events->removeListener('bar', $callBack));
-        $events->trigger('foo');
+        isFalse($eManager->removeListener('bar', $callBack));
+        $eManager->trigger('foo');
         isTrue($result);
     }
 
-    function testRemoveListenerTwice()
+    public function testRemoveListenerTwice()
     {
         $result = false;
 
@@ -181,59 +183,59 @@ class EventsTest extends PHPUnit
             $result = true;
         };
 
-        $events = new EventManager();
-        $events->on('foo', $callBack);
-        $events->trigger('foo');
+        $eManager = new EventManager();
+        $eManager->on('foo', $callBack);
+        $eManager->trigger('foo');
         isTrue($result);
 
         $result = false;
-        isTrue($events->removeListener('foo', $callBack));
-        isFalse($events->removeListener('foo', $callBack));
+        isTrue($eManager->removeListener('foo', $callBack));
+        isFalse($eManager->removeListener('foo', $callBack));
 
-        $events->trigger('foo');
+        $eManager->trigger('foo');
         isFalse($result);
     }
 
-    function testRemoveAllListeners()
+    public function testRemoveAllListeners()
     {
         $result   = false;
         $callBack = function () use (&$result) {
             $result = true;
         };
 
-        $events = new EventManager();
-        $events->on('foo', $callBack);
-        $events->trigger('foo');
+        $eManager = new EventManager();
+        $eManager->on('foo', $callBack);
+        $eManager->trigger('foo');
         isTrue($result);
         $result = false;
 
-        $events->removeAllListeners('foo');
+        $eManager->removeAllListeners('foo');
 
-        $events->trigger('foo');
+        $eManager->trigger('foo');
         isFalse($result);
     }
 
-    function testRemoveAllListenersNoArg()
+    public function testRemoveAllListenersNoArg()
     {
         $result   = false;
         $callBack = function () use (&$result) {
             $result = true;
         };
 
-        $events = new EventManager();
-        $events->on('foo', $callBack);
+        $eManager = new EventManager();
+        $eManager->on('foo', $callBack);
 
-        $events->trigger('foo');
+        $eManager->trigger('foo');
         isTrue($result);
         $result = false;
 
-        $events->removeAllListeners();
+        $eManager->removeAllListeners();
 
-        $events->trigger('foo');
+        $eManager->trigger('foo');
         isFalse($result);
     }
 
-    function testOnce()
+    public function testOnce()
     {
         $result = 0;
 
@@ -241,11 +243,11 @@ class EventsTest extends PHPUnit
             $result++;
         };
 
-        $events = new EventManager();
-        $events->once('foo', $callBack);
+        $eManager = new EventManager();
+        $eManager->once('foo', $callBack);
 
-        $events->trigger('foo');
-        $events->trigger('foo');
+        $eManager->trigger('foo');
+        $eManager->trigger('foo');
 
         is(1, $result);
     }
@@ -253,23 +255,99 @@ class EventsTest extends PHPUnit
     /**
      * @depends testCancelEvent
      */
-    function testPriorityOnce()
+    public function testPriorityOnce()
     {
         $argResult = 0;
 
-        $events = new EventManager();
-        $events->once('foo', function () use (&$argResult) {
+        $eManager = new EventManager();
+        $eManager->once('foo', function () use (&$argResult) {
             $argResult = 1;
-            return false;
+            throw new Exception('Something wrong #1');
         });
 
-        $events->once('foo', function () use (&$argResult) {
+        $eManager->once('foo', function () use (&$argResult) {
             $argResult = 2;
-            return false;
-
+            throw new Exception('Something wrong #2');
         }, 1);
 
-        isFalse($events->trigger('foo', ['bar']));
+        is('Something wrong #2', $eManager->trigger('foo', ['bar']));
         is(2, $argResult);
+    }
+
+    public function testContinueCallBack()
+    {
+        $testVar = 0;
+
+        $eManager = new EventManager();
+        $eManager->on('foo', function () {
+            // noop
+        });
+        $eManager->on('foo', function () {
+            // noop
+        });
+
+        $continueCallBack = function () use (&$testVar) {
+            $testVar = 1;
+            return true;
+        };
+
+        // Set true with $continueCallBack
+        $eManager->trigger('foo', [], $continueCallBack);
+
+        is(1, $testVar);
+    }
+
+    public function testCallbackFail()
+    {
+        $testVar  = 0;
+        $eManager = new EventManager();
+
+        $eManager
+            ->on('foo', function () use (&$testVar) {
+                $testVar++;
+            })
+            ->on('foo', function () use (&$testVar) {
+                $testVar++;
+            });
+
+        $eManager->trigger('foo', [], function () {
+            return false; // force fail after first action
+        });
+        is(1, $testVar);
+
+
+        $eManager->trigger('foo', [], function () {
+            return true; // force after first action
+        });
+        is(3, $testVar);
+
+
+        $eManager->trigger('foo', [], function () {
+        });
+        is(5, $testVar);
+    }
+
+    public function testStopViaContinueCallBack()
+    {
+        $testVar = 0;
+
+        $eManager = new EventManager();
+        $eManager->on('foo', function () use (&$testVar) {
+            $testVar++;
+        });
+        $eManager->on('foo', function () use (&$testVar) {
+            $testVar++;
+            throw new Exception('Something wrong');
+        });
+        $eManager->on('foo', function () use (&$testVar) {
+            $testVar++;
+        });
+
+        $continueCallBack = function () {
+            // noop
+        };
+
+        is('Something wrong', $eManager->trigger('foo', [], $continueCallBack));
+        is(2, $testVar);
     }
 }

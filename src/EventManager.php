@@ -39,7 +39,7 @@ class EventManager
      * @param string   $eventName
      * @param callable $callBack
      * @param int      $priority
-     * @return void
+     * @return $this
      *
      * @SuppressWarnings(PHPMD.ShortMethodName)
      */
@@ -57,6 +57,8 @@ class EventManager
             $this->_listeners[$eventName][1][] = $priority;
             $this->_listeners[$eventName][2][] = $callBack;
         }
+
+        return $this;
     }
 
     /**
@@ -104,37 +106,35 @@ class EventManager
      *
      * @param string   $eventName
      * @param array    $arguments
-     * @param callback $continueCallBack
+     * @param callback $continueCallback
      * @return bool
      */
-    public function trigger($eventName, array $arguments = [], callable $continueCallBack = null)
+    public function trigger($eventName, array $arguments = [], callable $continueCallback = null)
     {
-        if (is_null($continueCallBack)) {
+        if (is_null($continueCallback)) {
             foreach ($this->listeners($eventName) as $listener) {
-                $result = call_user_func_array($listener, $arguments);
-
-                if ($result === false) {
-                    return false;
+                try {
+                    call_user_func_array($listener, $arguments);
+                } catch (Exception $e) {
+                    return $e->getMessage();
                 }
             }
 
         } else {
-
             $listeners = $this->listeners($eventName);
             $counter   = count($listeners);
 
             foreach ($listeners as $listener) {
                 $counter--;
 
-                $result = call_user_func_array($listener, $arguments);
-                if ($result === false) {
-                    return false;
+                try {
+                    call_user_func_array($listener, $arguments);
+                } catch (Exception $e) {
+                    return $e->getMessage();
                 }
 
-                if ($counter > 0) {
-                    if (!$continueCallBack()) {
-                        break;
-                    }
+                if ($counter > 0 && false === $continueCallback()) {
+                    break;
                 }
             }
         }
