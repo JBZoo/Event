@@ -114,23 +114,20 @@ class EventsTest extends PHPUnit
         $result   = [];
         $eManager = new EventManager();
 
-        $eManager->on('foo', function () use (&$result) {
-            $result[] = 'a';
-        }, 200);
-
-        $eManager->on('foo', function () use (&$result) {
-            $result[] = 'b';
-        }, 50);
-
-        $eManager->on('foo', function () use (&$result) {
-            $result[] = 'c';
-        }, 300);
-
-        $eManager->on('foo', function () use (&$result) {
-            $result[] = 'd';
-        });
-
-        $eManager->trigger('foo');
+        $eManager
+            ->on('foo', function () use (&$result) {
+                $result[] = 'a';
+            }, 200)
+            ->on('foo', function () use (&$result) {
+                $result[] = 'b';
+            }, 50)
+            ->on('foo', function () use (&$result) {
+                $result[] = 'c';
+            }, 300)
+            ->on('foo', function () use (&$result) {
+                $result[] = 'd';
+            })
+            ->trigger('foo');
 
         is(['b', 'd', 'a', 'c'], $result);
     }
@@ -239,12 +236,10 @@ class EventsTest extends PHPUnit
     {
         $result = 0;
 
-        $callBack = function () use (&$result) {
-            $result++;
-        };
-
         $eManager = new EventManager();
-        $eManager->once('foo', $callBack);
+        $eManager->once('foo', function () use (&$result) {
+            $result++;
+        });
 
         $eManager->trigger('foo');
         $eManager->trigger('foo');
@@ -260,15 +255,15 @@ class EventsTest extends PHPUnit
         $argResult = 0;
 
         $eManager = new EventManager();
-        $eManager->once('foo', function () use (&$argResult) {
-            $argResult = 1;
-            throw new Exception('Something wrong #1');
-        });
-
-        $eManager->once('foo', function () use (&$argResult) {
-            $argResult = 2;
-            throw new Exception('Something wrong #2');
-        }, 1);
+        $eManager
+            ->once('foo', function () use (&$argResult) {
+                $argResult = 1;
+                throw new Exception('Something wrong #1');
+            })
+            ->once('foo', function () use (&$argResult) {
+                $argResult = 2;
+                throw new Exception('Something wrong #2');
+            }, 1);
 
         is('Something wrong #2', $eManager->trigger('foo', ['bar']));
         is(2, $argResult);
@@ -279,20 +274,19 @@ class EventsTest extends PHPUnit
         $testVar = 0;
 
         $eManager = new EventManager();
-        $eManager->on('foo', function () {
-            // noop
-        });
-        $eManager->on('foo', function () {
-            // noop
-        });
-
-        $continueCallBack = function () use (&$testVar) {
-            $testVar = 1;
-            return true;
-        };
+        $eManager
+            ->on('foo', function () {
+                // noop
+            })
+            ->on('foo', function () {
+                // noop
+            });
 
         // Set true with $continueCallBack
-        $eManager->trigger('foo', [], $continueCallBack);
+        $eManager->trigger('foo', [], function () use (&$testVar) {
+            $testVar = 1;
+            return true;
+        });
 
         is(1, $testVar);
     }
@@ -308,13 +302,12 @@ class EventsTest extends PHPUnit
             })
             ->on('foo', function () use (&$testVar) {
                 $testVar++;
+            })
+            ->trigger('foo', [], function () {
+                return false; // force fail after first action
             });
 
-        $eManager->trigger('foo', [], function () {
-            return false; // force fail after first action
-        });
         is(1, $testVar);
-
 
         $eManager->trigger('foo', [], function () {
             return true; // force after first action
@@ -332,22 +325,22 @@ class EventsTest extends PHPUnit
         $testVar = 0;
 
         $eManager = new EventManager();
-        $eManager->on('foo', function () use (&$testVar) {
-            $testVar++;
-        });
-        $eManager->on('foo', function () use (&$testVar) {
-            $testVar++;
-            throw new Exception('Something wrong');
-        });
-        $eManager->on('foo', function () use (&$testVar) {
-            $testVar++;
-        });
+        $eManager
+            ->on('foo', function () use (&$testVar) {
+                $testVar++;
+            })
+            ->on('foo', function () use (&$testVar) {
+                $testVar++;
+                throw new Exception('Something wrong');
+            })
+            ->on('foo', function () use (&$testVar) {
+                $testVar++;
+            });
 
-        $continueCallBack = function () {
+        is('Something wrong', $eManager->trigger('foo', [], function () {
             // noop
-        };
+        }));
 
-        is('Something wrong', $eManager->trigger('foo', [], $continueCallBack));
         is(2, $testVar);
     }
 }

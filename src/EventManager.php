@@ -67,7 +67,7 @@ class EventManager
      * @param string   $eventName
      * @param callable $callBack
      * @param int      $priority
-     * @return void
+     * @return $this
      */
     public function once($eventName, callable $callBack, $priority = 100)
     {
@@ -79,8 +79,7 @@ class EventManager
 
         };
 
-        $this->on($eventName, $wrapper, $priority);
-
+        return $this->on($eventName, $wrapper, $priority);
     }
 
     /**
