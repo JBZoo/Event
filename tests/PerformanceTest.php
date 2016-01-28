@@ -15,13 +15,59 @@
 
 namespace JBZoo\PHPUnit;
 
+use JBZoo\Event\EventManager;
+
 /**
  * Class PerformanceTest
  * @package JBZoo\Event
  */
 class PerformanceTest extends PHPUnit
 {
-    public function testLeakMemoryCreate()
+    public function testOneCallBack()
     {
+        $eManager = new EventManager();
+        $eManager->on('foo', function () {
+            // NOOP
+        });
+
+        runBench([
+            'One' => function () use ($eManager) {
+                $eManager->trigger('foo');
+            },
+        ], ['name' => 'One callback', 'count' => 10000]);
+    }
+
+    public function testManyCallBacks()
+    {
+        $eManager = new EventManager();
+
+        for ($i = 0; $i < 100; $i++) {
+            $eManager->on('foo', function () {
+                // NOOP
+            });
+        }
+
+        runBench([
+            'Many' => function () use ($eManager) {
+                $eManager->trigger('foo');
+            },
+        ], ['name' => 'Many callback', 'count' => 10000]);
+    }
+
+    public function testManyPrioritizedCallBacks()
+    {
+        $eManager = new EventManager();
+
+        for ($i = 0; $i < 100; $i++) {
+            $eManager->on('foo', function () {
+                // NOOP
+            }, 1000 - $i);
+        }
+
+        runBench([
+            'Many' => function () use ($eManager) {
+                $eManager->trigger('foo');
+            },
+        ], ['name' => 'Many Prioritized CallBacks', 'count' => 10000]);
     }
 }
