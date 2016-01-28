@@ -23,7 +23,7 @@ class EventManager
 {
     const LOWEST  = 0;
     const LOW     = 50;
-    const MID     = 100;
+    const MID     = 100; // Default
     const HIGH    = 500;
     const HIGHEST = 1000;
 
@@ -175,8 +175,8 @@ class EventManager
      * If the listener could not be found, this method will return false. If it
      * was removed it will return true.
      *
-     * @param string   $eventName
-     * @param callable $listener
+     * @param string        $eventName
+     * @param callable|null $listener
      * @return bool
      */
     public function removeListener($eventName, callable $listener)

@@ -343,4 +343,43 @@ class EventsTest extends PHPUnit
 
         is(2, $testVar);
     }
+
+    public function testNamespaces()
+    {
+        $eManager = new EventManager();
+
+        $eManager
+            ->on('foo', function () {
+
+            })
+            ->on('foo.bar', function () {
+
+            })
+            ->on('foo.bar.woo', function () {
+
+            })
+            ->on('foo.bar.buu', function () {
+
+            })
+            ->on('foo.woo', function () {
+
+            })
+            ->on('foo.woo.', function () {
+
+            })
+            ->on('*', function () {
+
+            })
+            ->on('foo.*', function () {
+
+            })
+            ->on('foo.*.woo', function () {
+
+            })
+            ->on('foo.*.woo', function () {
+
+            });
+
+    }
+
 }

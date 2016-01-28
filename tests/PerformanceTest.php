@@ -27,14 +27,14 @@ class PerformanceTest extends PHPUnit
     {
         $eManager = new EventManager();
         $eManager->on('foo', function () {
-            // NOOP
+            // noop
         });
 
         runBench([
             'One' => function () use ($eManager) {
                 $eManager->trigger('foo');
             },
-        ], ['name' => 'One callback', 'count' => 10000]);
+        ], ['name' => 'One callback', 'count' => 1000]);
     }
 
     public function testManyCallBacks()
@@ -43,7 +43,7 @@ class PerformanceTest extends PHPUnit
 
         for ($i = 0; $i < 100; $i++) {
             $eManager->on('foo', function () {
-                // NOOP
+                // noop
             });
         }
 
@@ -51,7 +51,7 @@ class PerformanceTest extends PHPUnit
             'Many' => function () use ($eManager) {
                 $eManager->trigger('foo');
             },
-        ], ['name' => 'Many callback', 'count' => 10000]);
+        ], ['name' => 'Many callback', 'count' => 1000]);
     }
 
     public function testManyPrioritizedCallBacks()
@@ -60,7 +60,7 @@ class PerformanceTest extends PHPUnit
 
         for ($i = 0; $i < 100; $i++) {
             $eManager->on('foo', function () {
-                // NOOP
+                // noop
             }, 1000 - $i);
         }
 
@@ -68,6 +68,6 @@ class PerformanceTest extends PHPUnit
             'Many' => function () use ($eManager) {
                 $eManager->trigger('foo');
             },
-        ], ['name' => 'Many Prioritized CallBacks', 'count' => 10000]);
+        ], ['name' => 'Many Prioritized CallBacks', 'count' => 1000]);
     }
 }
