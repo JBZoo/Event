@@ -376,7 +376,7 @@ class EventsTest extends PHPUnit
             ->on('foo.*.woo', function () {
 
             })
-            ->on('foo.*.woo', function () {
+            ->on('foo.*.*', function () {
 
             });
 

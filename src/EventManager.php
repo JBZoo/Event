@@ -40,11 +40,17 @@ class EventManager
      * @param callable $callBack
      * @param int      $priority
      * @return $this
+     * @throws Exception
      *
      * @SuppressWarnings(PHPMD.ShortMethodName)
      */
     public function on($eventName, callable $callBack, $priority = self::MID)
     {
+        $eventName = $this->_cleanEventName($eventName);
+        if (!$eventName) {
+            throw new Exception('Event name is empty!');
+        }
+
         if (!isset($this->_listeners[$eventName])) {
             $this->_listeners[$eventName] = [
                 true,  // If there's only one item, it's sorted
@@ -71,6 +77,8 @@ class EventManager
      */
     public function once($eventName, callable $callBack, $priority = 100)
     {
+        $eventName = $this->_cleanEventName($eventName);
+
         $wrapper = null;
         $wrapper = function () use ($eventName, $callBack, &$wrapper) {
 
@@ -107,9 +115,15 @@ class EventManager
      * @param array    $arguments
      * @param callback $continueCallback
      * @return bool
+     * @throws Exception
      */
     public function trigger($eventName, array $arguments = [], callable $continueCallback = null)
     {
+        $eventName = $this->_cleanEventName($eventName);
+        if (!$eventName) {
+            throw new Exception('Event name is empty!');
+        }
+
         if (is_null($continueCallback)) {
             foreach ($this->listeners($eventName) as $listener) {
                 try {
@@ -216,4 +230,16 @@ class EventManager
             $this->_listeners = [];
         }
     }
+
+    /**
+     * @param $eventName
+     * @return string
+     */
+    protected function _cleanEventName($eventName)
+    {
+        $eventName = strtolower($eventName);
+        $eventName = trim($eventName);
+        return $eventName;
+    }
+
 }

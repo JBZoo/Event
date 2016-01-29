@@ -70,4 +70,24 @@ class PerformanceTest extends PHPUnit
             },
         ], ['name' => 'Many Prioritized CallBacks', 'count' => 1000]);
     }
+
+    /**
+     * @expectedException \JBZoo\Event\Exception
+     */
+    public function testEmptyEventNameOn()
+    {
+        $eManager = new EventManager();
+        $eManager->on(' ', function () {
+
+        });
+    }
+
+    /**
+     * @expectedException \JBZoo\Event\Exception
+     */
+    public function testEmptyEventNameTrigger()
+    {
+        $eManager = new EventManager();
+        $eManager->trigger(' ');
+    }
 }
