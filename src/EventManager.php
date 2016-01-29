@@ -49,9 +49,6 @@ class EventManager
     public function on($eventName, callable $callback, $priority = self::MID)
     {
         $eventName = $this->cleanEventName($eventName);
-        if (!$eventName) {
-            throw new Exception('Event name is empty!');
-        }
 
         if (!isset($this->_list[$eventName])) {
             $this->_list[$eventName] = [];
@@ -115,16 +112,12 @@ class EventManager
     public function trigger($eventName, array $arguments = [], callable $continueCallback = null)
     {
         $eventName = $this->cleanEventName($eventName);
-        if (!$eventName) {
-            throw new ExceptionStop('Event name is empty!');
-        }
 
         if (strpos($eventName, '*') !== false) {
             throw new ExceptionStop('Event contains "*"');
         }
 
         $execCount = 0;
-
         $listeners = $this->listeners($eventName);
 
         if (is_null($continueCallback)) {
@@ -172,10 +165,9 @@ class EventManager
      */
     public function listeners($eventName)
     {
-        if (!$eventName) {
-            throw new Exception('Event name is empty!');
+        $eventName = $this->cleanEventName($eventName);
 
-        } elseif ($eventName === '*') {
+        if ($eventName === '*') {
             throw new Exception('Unsafe event name!');
         }
 
@@ -258,11 +250,13 @@ class EventManager
      * @param string $eventName
      * @return void
      */
-    public function removeAllListeners($eventName = null)
+    public function removeListeners($eventName = null)
     {
-        $eventName = $this->cleanEventName($eventName);
+        if (null !== $eventName) {
+            $eventName = $this->cleanEventName($eventName);
+        }
 
-        if ($eventName && isset($this->_list[$eventName])) {
+        if (isset($this->_list[$eventName])) {
             unset($this->_list[$eventName]);
         } else {
             $this->_list = [];
@@ -270,8 +264,11 @@ class EventManager
     }
 
     /**
-     * @param $eventName
+     * Prepare event namebefore using
+     *
+     * @param string $eventName
      * @return string
+     * @throws Exception
      */
     public function cleanEventName($eventName)
     {
@@ -279,6 +276,10 @@ class EventManager
         $eventName = preg_replace('#[^[:alnum:]\*\.]#', '', $eventName);
         $eventName = preg_replace('#\.{2,}#', '.', $eventName);
         $eventName = trim($eventName, '.');
+
+        if (!$eventName) {
+            throw new Exception('Event name is empty!');
+        }
 
         return $eventName;
     }

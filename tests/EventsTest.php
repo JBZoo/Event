@@ -210,7 +210,7 @@ class EventsTest extends PHPUnit
         isTrue($result);
         $result = false;
 
-        $eManager->removeAllListeners('foo');
+        $eManager->removeListeners('foo');
 
         $eManager->trigger('foo');
         isFalse($result);
@@ -230,7 +230,7 @@ class EventsTest extends PHPUnit
         isTrue($result);
         $result = false;
 
-        $eManager->removeAllListeners();
+        $eManager->removeListeners();
 
         is(0, $eManager->trigger('foo'));
         isFalse($result);
@@ -417,5 +417,23 @@ class EventsTest extends PHPUnit
     {
         $eManager = new EventManager();
         $eManager->trigger(' * ');
+    }
+
+    /**
+     * @expectedException \JBZoo\Event\Exception
+     */
+    public function testListenersEmpty()
+    {
+        $eManager = new EventManager();
+        $eManager->listeners(' ');
+    }
+
+    /**
+     * @expectedException \JBZoo\Event\Exception
+     */
+    public function testListenersAll()
+    {
+        $eManager = new EventManager();
+        $eManager->listeners('*');
     }
 }
