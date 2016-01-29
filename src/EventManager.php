@@ -15,6 +15,8 @@
 
 namespace JBZoo\Event;
 
+use JBZoo\Utils\Arr;
+
 /**
  * Class Event
  * @package JBZoo\Event
@@ -31,38 +33,31 @@ class EventManager
      * The list of listeners
      * @var array
      */
-    protected $_listeners = [];
+    protected $_list = [];
 
     /**
      * Subscribe to an event.
      *
      * @param string   $eventName
-     * @param callable $callBack
+     * @param callable $callback
      * @param int      $priority
      * @return $this
      * @throws Exception
      *
      * @SuppressWarnings(PHPMD.ShortMethodName)
      */
-    public function on($eventName, callable $callBack, $priority = self::MID)
+    public function on($eventName, callable $callback, $priority = self::MID)
     {
-        $eventName = $this->_cleanEventName($eventName);
+        $eventName = $this->cleanEventName($eventName);
         if (!$eventName) {
             throw new Exception('Event name is empty!');
         }
 
-        if (!isset($this->_listeners[$eventName])) {
-            $this->_listeners[$eventName] = [
-                true,  // If there's only one item, it's sorted
-                [$priority],
-                [$callBack],
-            ];
-
-        } else {
-            $this->_listeners[$eventName][0]   = false; // marked as unsorted
-            $this->_listeners[$eventName][1][] = $priority;
-            $this->_listeners[$eventName][2][] = $callBack;
+        if (!isset($this->_list[$eventName])) {
+            $this->_list[$eventName] = [];
         }
+
+        $this->_list[$eventName][] = [$priority, $callback];
 
         return $this;
     }
@@ -77,7 +72,7 @@ class EventManager
      */
     public function once($eventName, callable $callBack, $priority = 100)
     {
-        $eventName = $this->_cleanEventName($eventName);
+        $eventName = $this->cleanEventName($eventName);
 
         $wrapper = null;
         $wrapper = function () use ($eventName, $callBack, &$wrapper) {
@@ -114,35 +109,45 @@ class EventManager
      * @param string   $eventName
      * @param array    $arguments
      * @param callback $continueCallback
-     * @return bool
+     * @return int|string
      * @throws Exception
      */
     public function trigger($eventName, array $arguments = [], callable $continueCallback = null)
     {
-        $eventName = $this->_cleanEventName($eventName);
+        $eventName = $this->cleanEventName($eventName);
         if (!$eventName) {
-            throw new Exception('Event name is empty!');
+            throw new ExceptionStop('Event name is empty!');
         }
 
+        if (strpos($eventName, '*') !== false) {
+            throw new ExceptionStop('Event contains "*"');
+        }
+
+        $execCount = 0;
+
+        $listeners = $this->listeners($eventName);
+
         if (is_null($continueCallback)) {
-            foreach ($this->listeners($eventName) as $listener) {
+
+            foreach ($listeners as $listener) {
                 try {
                     call_user_func_array($listener, $arguments);
-                } catch (Exception $e) {
+                    $execCount++;
+                } catch (ExceptionStop $e) {
                     return $e->getMessage();
                 }
             }
 
         } else {
-            $listeners = $this->listeners($eventName);
-            $counter   = count($listeners);
+            $counter = count($listeners);
 
             foreach ($listeners as $listener) {
                 $counter--;
 
                 try {
                     call_user_func_array($listener, $arguments);
-                } catch (Exception $e) {
+                    $execCount++;
+                } catch (ExceptionStop $e) {
                     return $e->getMessage();
                 }
 
@@ -152,7 +157,7 @@ class EventManager
             }
         }
 
-        return true;
+        return $execCount;
     }
 
     /**
@@ -163,24 +168,55 @@ class EventManager
      *
      * @param string $eventName
      * @return callable[]
+     * @throws Exception
      */
     public function listeners($eventName)
     {
-        if (!isset($this->_listeners[$eventName])) {
-            return [];
+        if (!$eventName) {
+            throw new Exception('Event name is empty!');
+
+        } elseif ($eventName === '*') {
+            throw new Exception('Unsafe event name!');
         }
 
-        // The list is not sorted
-        if (!$this->_listeners[$eventName][0]) {
+        $ePaths = explode('.', $eventName);
+
+        $result = [];
+        foreach ($this->_list as $eName => $eData) {
+
+            if ($eName === $eventName) {
+                $result = array_merge($result, $eData);
+
+            } elseif (strpos('*', $eName) === false) {
+
+                $eNameParts = explode('.', $eName);
+                $isFound    = true;
+
+                if (count($eNameParts) === count($ePaths)) {
+                    foreach ($eNameParts as $pos => $eNamePart) {
+                        if ('*' !== $eNamePart && $eNamePart !== $ePaths[$pos]) {
+                            $isFound = false;
+                            break;
+                        }
+                    }
+
+                    if ($isFound) {
+                        $result = array_merge($result, $eData);
+                    }
+                }
+            }
+        }
+
+        if (count($result) > 0) {
             // Sorting
-            array_multisort($this->_listeners[$eventName][1], SORT_NUMERIC, $this->_listeners[$eventName][2]);
+            usort($result, function ($item1, $item2) {
+                return $item2[0] - $item1[0];
+            });
 
-            // Marking the listeners as sorted
-            $this->_listeners[$eventName][0] = true;
+            return Arr::getField($result, 1);
         }
 
-        return $this->_listeners[$eventName][2];
-
+        return [];
     }
 
     /**
@@ -195,16 +231,16 @@ class EventManager
      */
     public function removeListener($eventName, callable $listener)
     {
-        if (!isset($this->_listeners[$eventName])) {
+        $eventName = $this->cleanEventName($eventName);
+
+        if (!isset($this->_list[$eventName])) {
             return false;
         }
 
-        foreach ($this->_listeners[$eventName][2] as $index => $check) {
+        foreach ($this->_list[$eventName] as $index => $eventData) {
 
-            if ($check === $listener) {
-                unset($this->_listeners[$eventName][1][$index]);
-                unset($this->_listeners[$eventName][2][$index]);
-
+            if ($eventData[1] === $listener) {
+                unset($this->_list[$eventName][$index]);
                 return true;
             }
         }
@@ -224,10 +260,12 @@ class EventManager
      */
     public function removeAllListeners($eventName = null)
     {
-        if (!is_null($eventName)) {
-            unset($this->_listeners[$eventName]);
+        $eventName = $this->cleanEventName($eventName);
+
+        if ($eventName && isset($this->_list[$eventName])) {
+            unset($this->_list[$eventName]);
         } else {
-            $this->_listeners = [];
+            $this->_list = [];
         }
     }
 
@@ -235,11 +273,13 @@ class EventManager
      * @param $eventName
      * @return string
      */
-    protected function _cleanEventName($eventName)
+    public function cleanEventName($eventName)
     {
         $eventName = strtolower($eventName);
-        $eventName = trim($eventName);
+        $eventName = preg_replace('#[^[:alnum:]\*\.]#', '', $eventName);
+        $eventName = preg_replace('#\.{2,}#', '.', $eventName);
+        $eventName = trim($eventName, '.');
+
         return $eventName;
     }
-
 }

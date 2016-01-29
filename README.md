@@ -21,7 +21,7 @@ $eManager->on('create', function () {
     echo "Something action";
 });
 
-// JUST DO IT
+// Just do it!
 $eManager->trigger('create');
 ```
 
@@ -67,8 +67,10 @@ $eManager->on('create', [$object, 'Method']);     // Method of instance
 use JBZoo\Event\Exception;
 
 $eManager->on('create', function () {
-    throw new Exception(); // Special exception for  JBZoo/Event
+    throw new ExceptionStop('Some reason'); // Special exception for  JBZoo/Event
 });
+
+$eManager->trigger('create'); // return 'Some reason' or TRUE if all events done
 ```
 
 
