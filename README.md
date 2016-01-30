@@ -91,11 +91,45 @@ $eManager->on('create', function ($entityId, &$warnings) {
     $warnings[] = "Something bad may or may not have happened.\n";
 });
 $warnings = [];
-$eventEmitter->trigger('create', [$entityId, &$warnings]);
+$eManager->trigger('create', [$entityId, &$warnings]);
 ```
 
 ### Namespaces
-... coming soon :)
+```php
+$eManager->on('item.*', function () {
+    // item.init
+    // item.save
+    echo "Any actions with item";
+});
+
+$eManager->on('*.init', function () {
+    // tag.init
+    // item.init
+    echo "Init any entity";
+});
+
+$eManager->on('*.save', function () {
+    // tag.save
+    // item.save
+    echo "Saving any entity in system";
+});
+
+$eManager->on('*.save.after', function () {
+    // tag.save.after
+    // item.save.after
+    echo "Any entity on after save";
+});
+
+$eManager->trigger('tag.init');
+$eManager->trigger('tag.save.before');
+$eManager->trigger('tag.save');
+$eManager->trigger('tag.save.after');
+
+$eManager->trigger('item.init');
+$eManager->trigger('item.save.before');
+$eManager->trigger('item.save');
+$eManager->trigger('item.save.after');
+```
 
 
 ### License
