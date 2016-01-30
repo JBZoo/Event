@@ -374,33 +374,6 @@ class EventsTest extends PHPUnit
         is('foo', $eManager->cleanEventName('FOO.#$%^&()'));
     }
 
-    public function testNamespaces()
-    {
-        $eManager = new EventManager();
-        $fnc      = function () {
-        };
-
-        $eManager->on('*.save.*', $fnc, 103);
-        $eManager->on('*.save.*', $fnc, 102);
-        $eManager->on('*.save.*', $fnc, 104);
-        $eManager->on('*.save.*', $fnc, 101);
-        $eManager->on('*.save.*.*', $fnc, 500);
-        $eManager->on('*.save.before', $fnc, 10);
-        $eManager->on('item.save.before', $fnc, -1);
-
-        is(6, $eManager->trigger('item.save.before'));
-
-        is(1, $eManager->trigger('item.save.before.deeeep'));
-        is(1, $eManager->trigger('category.save.before.deeeep'));
-
-        is(0, $eManager->trigger('item.load'));
-        is(0, $eManager->trigger('item.load.before'));
-        is(0, $eManager->trigger('item.save'));
-        is(4, $eManager->trigger('item.save.after'));
-        is(1, $eManager->trigger('item.save.after.456'));
-        is(0, $eManager->trigger('save.before'));
-    }
-
     /**
      * @expectedException \JBZoo\Event\Exception
      */
@@ -435,5 +408,25 @@ class EventsTest extends PHPUnit
     {
         $eManager = new EventManager();
         $eManager->listeners('*');
+    }
+
+    /**
+     * @expectedException \JBZoo\Event\Exception
+     */
+    public function testEmptyEventNameOn()
+    {
+        $eManager = new EventManager();
+        $eManager->on(' ', function () {
+
+        });
+    }
+
+    /**
+     * @expectedException \JBZoo\Event\Exception
+     */
+    public function testEmptyEventNameTrigger()
+    {
+        $eManager = new EventManager();
+        $eManager->trigger(' ');
     }
 }

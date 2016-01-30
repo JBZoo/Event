@@ -71,23 +71,35 @@ class PerformanceTest extends PHPUnit
         ], ['name' => 'Many Prioritized CallBacks', 'count' => 1000]);
     }
 
-    /**
-     * @expectedException \JBZoo\Event\Exception
-     */
-    public function testEmptyEventNameOn()
+    public function testComplexRandom()
     {
         $eManager = new EventManager();
-        $eManager->on(' ', function () {
 
-        });
-    }
+        $parts = ['foo', 'bar', 'woo', 'bazz', '*', '*', '*'];
 
-    /**
-     * @expectedException \JBZoo\Event\Exception
-     */
-    public function testEmptyEventNameTrigger()
-    {
-        $eManager = new EventManager();
-        $eManager->trigger(' ');
+        for ($i = 0; $i < 100; $i++) {
+
+            shuffle($parts);
+            $partsRand = implode('.', array_slice($parts, 0, mt_rand(1, count($parts))));
+
+            if ($partsRand === '*') {
+                $partsRand .= '.foo';
+            }
+
+            $eManager->on($partsRand, function () {
+                // noop
+            }, mt_rand(0, $i));
+        }
+
+        runBench([
+            'Many' => function () use ($eManager) {
+
+                $parts = ['foo', 'bar', 'woo', 'bazz'];
+                shuffle($parts);
+                $partsRand = implode('.', array_slice($parts, 0, mt_rand(1, count($parts))));
+
+                $eManager->trigger($partsRand);
+            },
+        ], ['name' => 'Complex random', 'count' => 1000]);
     }
 }

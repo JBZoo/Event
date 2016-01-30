@@ -54,7 +54,7 @@ class EventManager
             $this->_list[$eventName] = [];
         }
 
-        $this->_list[$eventName][] = [$priority, $callback];
+        $this->_list[$eventName][] = [$priority, $callback, $eventName];
 
         return $this;
     }
@@ -171,22 +171,23 @@ class EventManager
             throw new Exception('Unsafe event name!');
         }
 
+        $result = [];
         $ePaths = explode('.', $eventName);
 
-        $result = [];
         foreach ($this->_list as $eName => $eData) {
 
             if ($eName === $eventName) {
                 $result = array_merge($result, $eData);
 
-            } elseif (strpos('*', $eName) === false) {
+            } elseif (strpos($eName, '*') !== false) {
 
                 $eNameParts = explode('.', $eName);
-                $isFound    = true;
 
-                if (count($eNameParts) === count($ePaths)) {
+                if (count($eNameParts) <= count($ePaths)) {
+                    $isFound = true;
+
                     foreach ($eNameParts as $pos => $eNamePart) {
-                        if ('*' !== $eNamePart && $eNamePart !== $ePaths[$pos]) {
+                        if ((isset($ePaths[$pos]) && $ePaths[$pos] !== $eNamePart) && '*' !== $eNamePart) {
                             $isFound = false;
                             break;
                         }
