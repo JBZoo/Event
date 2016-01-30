@@ -183,7 +183,7 @@ class EventManager
 
                 $eNameParts = explode('.', $eName);
 
-                if (count($eNameParts) <= count($ePaths)) {
+                if (count($eNameParts) === count($ePaths)) {
                     $isFound = true;
 
                     foreach ($eNameParts as $pos => $eNamePart) {

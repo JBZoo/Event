@@ -71,9 +71,10 @@ class EventsNamespacesTest extends PHPUnit
         $eManager->on('item.*', $this->noop);
 
         is(1, $eManager->trigger('item.save'));
-        is(1, $eManager->trigger('item.save.before'));
-        is(1, $eManager->trigger('item.save.after'));
-        is(1, $eManager->trigger('item.save.after.realy.deep'));
+
+        is(0, $eManager->trigger('item.save.before'));
+        is(0, $eManager->trigger('item.save.after'));
+        is(0, $eManager->trigger('item.save.after.realy.deep'));
     }
 
     public function testAnyPart2()
@@ -82,11 +83,12 @@ class EventsNamespacesTest extends PHPUnit
 
         $eManager->on('item.*.after', $this->noop);
 
+        is(1, $eManager->trigger('item.save.after'));
+        is(1, $eManager->trigger('item.init.after'));
+
         is(0, $eManager->trigger('item.save'));
         is(0, $eManager->trigger('item.save.before'));
-
-        is(1, $eManager->trigger('item.save.after'));
-        is(1, $eManager->trigger('item.save.after.realy.deep'));
+        is(0, $eManager->trigger('item.save.after.realy.deep'));
     }
 
     public function testAnyPart3()
@@ -95,11 +97,11 @@ class EventsNamespacesTest extends PHPUnit
 
         $eManager->on('*.save.after', $this->noop);
 
+        is(1, $eManager->trigger('item.save.after'));
+
         is(0, $eManager->trigger('item.save'));
         is(0, $eManager->trigger('item.save.before'));
-
-        is(1, $eManager->trigger('item.save.after'));
-        is(1, $eManager->trigger('item.save.after.realy.deep'));
+        is(0, $eManager->trigger('item.save.after.realy.deep'));
     }
 
     public function testAnyPart4()
@@ -108,11 +110,11 @@ class EventsNamespacesTest extends PHPUnit
 
         $eManager->on('*.save.*', $this->noop);
 
-        is(0, $eManager->trigger('item.save'));
-
         is(1, $eManager->trigger('item.save.before'));
         is(1, $eManager->trigger('item.save.after'));
-        is(1, $eManager->trigger('item.save.after.realy.deep'));
+
+        is(0, $eManager->trigger('item.save'));
+        is(0, $eManager->trigger('item.save.after.realy.deep'));
     }
 
     public function testAnyPart5()
@@ -121,17 +123,41 @@ class EventsNamespacesTest extends PHPUnit
 
         $eManager->on('*.*.after', $this->noop);
 
-        is(0, $eManager->trigger('item.save'));
-        is(0, $eManager->trigger('item.save.before'));
-
         is(1, $eManager->trigger('category.init.after'));
         is(1, $eManager->trigger('item.save.after'));
-        is(1, $eManager->trigger('item.save.after.realy.deep.name'));
         is(1, $eManager->trigger('item.load.after'));
-        is(1, $eManager->trigger('item.load.after.realy.deep.name'));
+
+        is(0, $eManager->trigger('item.save'));
+        is(0, $eManager->trigger('item.save.before'));
+        is(0, $eManager->trigger('item.save.after.realy.deep.name'));
+        is(0, $eManager->trigger('item.load.after.realy.deep.name'));
     }
 
     public function testComplex()
+    {
+        $eManager = new EventManager();
+
+        $eManager->on('item.*', function () {
+        });
+        $eManager->on('*.init', function () {
+        });
+        $eManager->on('*.save', function () {
+        });
+        $eManager->on('*.save.after', function () {
+        });
+
+        is(1, $eManager->trigger('tag.init'));
+        is(0, $eManager->trigger('tag.save.before'));
+        is(1, $eManager->trigger('tag.save'));
+        is(1, $eManager->trigger('tag.save.after'));
+
+        is(2, $eManager->trigger('item.init'));
+        is(0, $eManager->trigger('item.save.before'));
+        is(2, $eManager->trigger('item.save'));
+        is(1, $eManager->trigger('item.save.after'));
+    }
+
+    public function testComplex2()
     {
         $eManager = new EventManager();
 
@@ -151,13 +177,13 @@ class EventsNamespacesTest extends PHPUnit
         is(0, $eManager->trigger('item.load'));
         is(0, $eManager->trigger('item.load.before'));
         is(0, $eManager->trigger('save.before'));
+        is(0, $eManager->trigger('item.save.before.realy.deep.name'));
+        is(0, $eManager->trigger('category.save.before.realy.deep.name'));
 
         is(1, $eManager->trigger('item.save'));
         is(1, $eManager->trigger('category'));
-        is(6, $eManager->trigger('item.save.before'));
-        is(6, $eManager->trigger('item.save.before.realy.deep.name'));
-        is(6, $eManager->trigger('category.save.before.realy.deep.name'));
-        is(4, $eManager->trigger('item.save.after'));
-        is(5, $eManager->trigger('item.save.after.deep'));
+        is(1, $eManager->trigger('item.save.after.deep'));
+        is(3, $eManager->trigger('item.save.after'));
+        is(5, $eManager->trigger('item.save.before'));
     }
 }
