@@ -1,6 +1,6 @@
 # JBZoo Event  [![Build Status](https://travis-ci.org/JBZoo/Event.svg?branch=master)](https://travis-ci.org/JBZoo/Event)      [![Coverage Status](https://coveralls.io/repos/JBZoo/Event/badge.svg?branch=master&service=github)](https://coveralls.io/github/JBZoo/Event?branch=master)
 
-#### PHP Library for event-based development (fork from [sabre/event](https://github.com/fruux/sabre-event))
+#### PHP Library for event-based development
 
 [![License](https://poser.pugx.org/JBZoo/Event/license)](https://packagist.org/packages/JBZoo/Event) [![Latest Stable Version](https://poser.pugx.org/JBZoo/Event/v/stable)](https://packagist.org/packages/JBZoo/Event) [![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/JBZoo/Event/badges/quality-score.png?b=master)](https://scrutinizer-ci.com/g/JBZoo/Event/?branch=master)
 
