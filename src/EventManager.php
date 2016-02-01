@@ -15,8 +15,6 @@
 
 namespace JBZoo\Event;
 
-use JBZoo\Utils\Arr;
-
 /**
  * Class Event
  * @package JBZoo\Event
