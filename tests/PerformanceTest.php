@@ -20,6 +20,7 @@ use JBZoo\Event\EventManager;
 /**
  * Class PerformanceTest
  * @package JBZoo\Event
+ * @coversNothing
  */
 class PerformanceTest extends PHPUnit
 {
