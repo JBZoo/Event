@@ -7,7 +7,6 @@
 The EventEmitter is a simple pattern that allows you to create an object that emits events, and allow you to listen to those events.
 
 ### Simple example
-
 ```php
 require_once './vendor/autoload.php'; // composer autoload.php
 
@@ -46,7 +45,7 @@ $eManager->on('create', function () {
     echo "Something action";
 }, 42);
 
-// don't care...
+// Don't care...
 $eManager->on('create', function () {
     echo "Something action";
 });
@@ -64,10 +63,10 @@ $eManager->on('create', [$object, 'Method']);     // Method of instance
 
 ###  Cancel queue of events
 ```php
-use JBZoo\Event\Exception;
+use JBZoo\Event\ExceptionStop;
 
 $eManager->on('create', function () {
-    throw new ExceptionStop('Some reason'); // Special exception for  JBZoo/Event
+    throw new ExceptionStop('Some reason'); // Special exception for JBZoo/Event
 });
 
 $eManager->trigger('create'); // return 'Some reason' or TRUE if all events done
