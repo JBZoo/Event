@@ -178,22 +178,10 @@ class EventManager
                 $result = array_merge($result, $eData);
 
             } elseif (strpos($eName, '*') !== false) {
-
                 $eNameParts = explode('.', $eName);
 
-                if (count($eNameParts) === count($ePaths)) {
-                    $isFound = true;
-
-                    foreach ($eNameParts as $pos => $eNamePart) {
-                        if ((isset($ePaths[$pos]) && $ePaths[$pos] !== $eNamePart) && '*' !== $eNamePart) {
-                            $isFound = false;
-                            break;
-                        }
-                    }
-
-                    if ($isFound) {
-                        $result = array_merge($result, $eData);
-                    }
+                if ($this->_isContainPart($eNameParts, $ePaths)) {
+                    $result = array_merge($result, $eData);
                 }
             }
         }
@@ -213,6 +201,31 @@ class EventManager
     }
 
     /**
+     * Check is one part name contain another one
+     *
+     * @param array $eNameParts
+     * @param array $ePaths
+     * @return bool
+     */
+    protected function _isContainPart($eNameParts, $ePaths)
+    {
+        if (count($eNameParts) === count($ePaths)) {
+            $isFound = true;
+
+            foreach ($eNameParts as $pos => $eNamePart) {
+                if ((isset($ePaths[$pos]) && $ePaths[$pos] !== $eNamePart) && '*' !== $eNamePart) {
+                    $isFound = false;
+                    break;
+                }
+            }
+
+            return $isFound;
+
+
+        }
+    }
+
+    /**
      * Removes a specific listener from an event.
      *
      * If the listener could not be found, this method will return false. If it
@@ -221,8 +234,10 @@ class EventManager
      * @param string        $eventName
      * @param callable|null $listener
      * @return bool
+     *
+     * @throws Exception
      */
-    public function removeListener($eventName, callable $listener)
+    public function removeListener($eventName, callable $listener = null)
     {
         $eventName = $this->cleanEventName($eventName);
 
