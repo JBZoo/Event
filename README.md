@@ -6,6 +6,15 @@
 
 The EventEmitter is a simple pattern that allows you to create an object that emits events, and allow you to listen to those events.
 
+### Install
+```sh
+# add to project
+composer require jbzoo/event --update-no-dev
+# via update
+composer require jbzoo/event --no-dev
+```
+
+
 ### Simple example
 ```php
 require_once './vendor/autoload.php'; // composer autoload.php
