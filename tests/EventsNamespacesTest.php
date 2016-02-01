@@ -145,16 +145,18 @@ class EventsNamespacesTest extends PHPUnit
         });
         $eManager->on('*.save.after', function () {
         });
+        $eManager->on(['tag.*.*', 'item.*.*'], function () {
+        });
 
         is(1, $eManager->trigger('tag.init'));
-        is(0, $eManager->trigger('tag.save.before'));
+        is(1, $eManager->trigger('tag.save.before'));
         is(1, $eManager->trigger('tag.save'));
-        is(1, $eManager->trigger('tag.save.after'));
+        is(2, $eManager->trigger('tag.save.after'));
 
         is(2, $eManager->trigger('item.init'));
-        is(0, $eManager->trigger('item.save.before'));
+        is(1, $eManager->trigger('item.save.before'));
         is(2, $eManager->trigger('item.save'));
-        is(1, $eManager->trigger('item.save.after'));
+        is(2, $eManager->trigger('item.save.after'));
     }
 
     public function testComplex2()

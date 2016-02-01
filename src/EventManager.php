@@ -36,23 +36,27 @@ class EventManager
     /**
      * Subscribe to an event.
      *
-     * @param string   $eventName
-     * @param callable $callback
-     * @param int      $priority
+     * @param string|array $eventNames
+     * @param callable     $callback
+     * @param int          $priority
      * @return $this
      * @throws Exception
      *
      * @SuppressWarnings(PHPMD.ShortMethodName)
      */
-    public function on($eventName, callable $callback, $priority = self::MID)
+    public function on($eventNames, callable $callback, $priority = self::MID)
     {
-        $eventName = $this->cleanEventName($eventName);
+        $eventNames = (array)$eventNames;
 
-        if (!isset($this->_list[$eventName])) {
-            $this->_list[$eventName] = [];
+        foreach ($eventNames as $oneEventName) {
+            $oneEventName = $this->cleanEventName($oneEventName);
+
+            if (!isset($this->_list[$oneEventName])) {
+                $this->_list[$oneEventName] = [];
+            }
+
+            $this->_list[$oneEventName][] = [(int)$priority, $callback, $oneEventName];
         }
-
-        $this->_list[$eventName][] = [$priority, $callback, $eventName];
 
         return $this;
     }
