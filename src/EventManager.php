@@ -220,8 +220,6 @@ class EventManager
             }
 
             return $isFound;
-
-
         }
     }
 
