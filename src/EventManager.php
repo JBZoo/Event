@@ -119,40 +119,83 @@ class EventManager
             throw new ExceptionStop('Event contains "*"');
         }
 
-        $execCount = 0;
-        $listeners = $this->listeners($eventName);
+        $listeners = $this->getList($eventName);
 
         if (is_null($continueCallback)) {
-
-            foreach ($listeners as $listener) {
-                try {
-                    call_user_func_array($listener, $arguments);
-                    $execCount++;
-                } catch (ExceptionStop $e) {
-                    return $e->getMessage();
-                }
-            }
-
+            $execCount = $this->_callListeners($listeners, $arguments);
         } else {
-            $counter = count($listeners);
+            $execCount = $this->_callListenersWithCallback($listeners, $arguments, $continueCallback);
+        }
 
-            foreach ($listeners as $listener) {
-                $counter--;
+        return $execCount;
+    }
 
-                try {
-                    call_user_func_array($listener, $arguments);
-                    $execCount++;
-                } catch (ExceptionStop $e) {
-                    return $e->getMessage();
-                }
+    /**
+     * Call list of listeners
+     *
+     * @param array $listeners
+     * @param array $arguments
+     * @return int|string
+     */
+    protected function _callListeners($listeners, array $arguments)
+    {
+        $execCount = 0;
 
-                if ($counter > 0 && false === $continueCallback()) {
-                    break;
-                }
+        foreach ($listeners as $listener) {
+            if ($result = $this->_callListener($listener, $arguments)) {
+                return $result;
+            }
+            $execCount++;
+        }
+
+        return $execCount;
+    }
+
+    /**
+     * Call list of listeners with continue callback function
+     *
+     * @param array    $listeners
+     * @param array    $arguments
+     * @param callable $continueCallback
+     * @return int|string
+     */
+    protected function _callListenersWithCallback($listeners, array $arguments, callable $continueCallback)
+    {
+        $counter   = count($listeners);
+        $execCount = 0;
+
+        foreach ($listeners as $listener) {
+            $counter--;
+
+            if ($result = $this->_callListener($listener, $arguments)) {
+                return $result;
+            }
+            $execCount++;
+
+            if ($counter > 0 && false === $continueCallback()) {
+                break;
             }
         }
 
         return $execCount;
+    }
+
+    /**
+     * Call list of listeners
+     *
+     * @param mixed $listener
+     * @param array $arguments
+     * @return int|string
+     */
+    protected function _callListener($listener, array $arguments)
+    {
+        try {
+            call_user_func_array($listener, $arguments);
+        } catch (ExceptionStop $e) {
+            return $e->getMessage();
+        }
+
+        return false;
     }
 
     /**
@@ -165,7 +208,7 @@ class EventManager
      * @return callable[]
      * @throws Exception
      */
-    public function listeners($eventName)
+    public function getList($eventName)
     {
         $eventName = $this->cleanEventName($eventName);
 

@@ -43,7 +43,7 @@ class EventsTest extends PHPUnit
         $eManager->on('foo', $callback1, 200);
         $eManager->on('foo', $callback2, 100);
 
-        is([$callback2, $callback1], $eManager->listeners('foo'));
+        is([$callback2, $callback1], $eManager->getList('foo'));
     }
 
     /**
@@ -398,7 +398,7 @@ class EventsTest extends PHPUnit
     public function testListenersEmpty()
     {
         $eManager = new EventManager();
-        $eManager->listeners(' ');
+        $eManager->getList(' ');
     }
 
     /**
@@ -407,7 +407,7 @@ class EventsTest extends PHPUnit
     public function testListenersAll()
     {
         $eManager = new EventManager();
-        $eManager->listeners('*');
+        $eManager->getList('*');
     }
 
     /**
