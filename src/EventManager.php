@@ -206,7 +206,9 @@ class EventManager
                 return $item2[0] - $item1[0];
             });
 
-            return Arr::getField($result, 1);
+            return array_map(function ($item) {
+                return $item[1];
+            }, $result);
         }
 
         return [];
