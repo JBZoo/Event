@@ -11,7 +11,7 @@ The EventEmitter is a simple pattern that allows you to create an object that em
 # add to project
 composer require jbzoo/event --update-no-dev
 # via update
-composer require jbzoo/event --no-dev
+composer update jbzoo/event --no-dev
 ```
 
 
