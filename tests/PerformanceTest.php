@@ -31,11 +31,11 @@ class PerformanceTest extends PHPUnit
             // noop
         });
 
-        runBench([
+        runBench(array(
             'One' => function () use ($eManager) {
                 $eManager->trigger('foo');
             },
-        ], ['name' => 'One callback', 'count' => 1000]);
+        ), array('name' => 'One callback', 'count' => 1000));
     }
 
     public function testManyCallBacks()
@@ -48,11 +48,11 @@ class PerformanceTest extends PHPUnit
             });
         }
 
-        runBench([
+        runBench(array(
             'Many' => function () use ($eManager) {
                 $eManager->trigger('foo');
             },
-        ], ['name' => 'Many callback', 'count' => 1000]);
+        ), array('name' => 'Many callback', 'count' => 1000));
     }
 
     public function testManyPrioritizedCallBacks()
@@ -65,18 +65,18 @@ class PerformanceTest extends PHPUnit
             }, 1000 - $i);
         }
 
-        runBench([
+        runBench(array(
             'Many' => function () use ($eManager) {
                 $eManager->trigger('foo');
             },
-        ], ['name' => 'Many Prioritized CallBacks', 'count' => 1000]);
+        ), array('name' => 'Many Prioritized CallBacks', 'count' => 1000));
     }
 
     public function testComplexRandom()
     {
         $eManager = new EventManager();
 
-        $parts = ['foo', 'bar', 'woo', 'bazz', '*', '*', '*'];
+        $parts = array('foo', 'bar', 'woo', 'bazz', '*', '*', '*');
 
         for ($i = 0; $i < 100; $i++) {
 
@@ -92,15 +92,15 @@ class PerformanceTest extends PHPUnit
             }, mt_rand(0, $i));
         }
 
-        runBench([
+        runBench(array(
             'Many' => function () use ($eManager) {
 
-                $parts = ['foo', 'bar', 'woo', 'bazz'];
+                $parts = array('foo', 'bar', 'woo', 'bazz');
                 shuffle($parts);
                 $partsRand = implode('.', array_slice($parts, 0, mt_rand(1, count($parts))));
 
                 $eManager->trigger($partsRand);
             },
-        ], ['name' => 'Complex random', 'count' => 1000]);
+        ), array('name' => 'Complex random', 'count' => 1000));
     }
 }

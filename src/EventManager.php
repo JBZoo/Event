@@ -31,7 +31,7 @@ class EventManager
      * The list of listeners
      * @var array
      */
-    protected $_list = [];
+    protected $_list = array();
 
     /**
      * Subscribe to an event.
@@ -44,18 +44,18 @@ class EventManager
      *
      * @SuppressWarnings(PHPMD.ShortMethodName)
      */
-    public function on($eventNames, callable $callback, $priority = self::MID)
+    public function on($eventNames, $callback, $priority = self::MID)
     {
         $eventNames = (array)$eventNames;
 
         foreach ($eventNames as $oneEventName) {
             $oneEventName = $this->cleanEventName($oneEventName);
 
-            if (!isset($this->_list[$oneEventName])) {
-                $this->_list[$oneEventName] = [];
+            if (!array_key_exists($oneEventName, $this->_list)) {
+                $this->_list[$oneEventName] = array();
             }
 
-            $this->_list[$oneEventName][] = [(int)$priority, $callback, $oneEventName];
+            $this->_list[$oneEventName][] = array((int)$priority, $callback, $oneEventName);
         }
 
         return $this;
@@ -68,15 +68,17 @@ class EventManager
      * @param callable $callBack
      * @param int      $priority
      * @return $this
+     * @throws Exception
      */
-    public function once($eventName, callable $callBack, $priority = 100)
+    public function once($eventName, $callBack, $priority = 100)
     {
         $eventName = $this->cleanEventName($eventName);
+        $eManager = $this;
 
         $wrapper = null;
-        $wrapper = function () use ($eventName, $callBack, &$wrapper) {
+        $wrapper = function () use ($eventName, $callBack, &$wrapper, $eManager) {
 
-            $this->removeListener($eventName, $wrapper);
+            $eManager->removeListener($eventName, $wrapper);
             return call_user_func_array($callBack, func_get_args());
 
         };
@@ -111,7 +113,7 @@ class EventManager
      * @return int|string
      * @throws Exception
      */
-    public function trigger($eventName, array $arguments = [], callable $continueCallback = null)
+    public function trigger($eventName, array $arguments = array(), $continueCallback = null)
     {
         $eventName = $this->cleanEventName($eventName);
 
@@ -121,7 +123,7 @@ class EventManager
 
         $listeners = $this->getList($eventName);
 
-        if (is_null($continueCallback)) {
+        if (null === $continueCallback) {
             $execCount = $this->_callListeners($listeners, $arguments);
         } else {
             $execCount = $this->_callListenersWithCallback($listeners, $arguments, $continueCallback);
@@ -159,7 +161,7 @@ class EventManager
      * @param callable $continueCallback
      * @return int|string
      */
-    protected function _callListenersWithCallback($listeners, array $arguments, callable $continueCallback)
+    protected function _callListenersWithCallback($listeners, array $arguments, $continueCallback)
     {
         $counter   = count($listeners);
         $execCount = 0;
@@ -216,7 +218,7 @@ class EventManager
             throw new Exception('Unsafe event name!');
         }
 
-        $result = [];
+        $result = array();
         $ePaths = explode('.', $eventName);
 
         foreach ($this->_list as $eName => $eData) {
@@ -244,7 +246,7 @@ class EventManager
             }, $result);
         }
 
-        return [];
+        return array();
     }
 
     /**
@@ -256,20 +258,21 @@ class EventManager
      */
     protected function _isContainPart($eNameParts, $ePaths)
     {
-        if (count($eNameParts) === count($ePaths)) {
-            $isFound = true;
-
-            foreach ($eNameParts as $pos => $eNamePart) {
-                if ((isset($ePaths[$pos]) && $ePaths[$pos] !== $eNamePart) && '*' !== $eNamePart) {
-                    $isFound = false;
-                    break;
-                }
-            }
-
-            return $isFound;
+        // Length of parts is equels
+        if (count($eNameParts) !== count($ePaths)) {
+            return false;
         }
 
-        return false;
+        $isFound = true;
+
+        foreach ($eNameParts as $pos => $eNamePart) {
+            if ('*' !== $eNamePart && array_key_exists($pos, $ePaths) && $ePaths[$pos] !== $eNamePart) {
+                $isFound = false;
+                break;
+            }
+        }
+
+        return $isFound;
     }
 
     /**
@@ -284,11 +287,11 @@ class EventManager
      *
      * @throws Exception
      */
-    public function removeListener($eventName, callable $listener = null)
+    public function removeListener($eventName, $listener = null)
     {
         $eventName = $this->cleanEventName($eventName);
 
-        if (!isset($this->_list[$eventName])) {
+        if (!array_key_exists($eventName, $this->_list)) {
             return false;
         }
 
@@ -312,6 +315,7 @@ class EventManager
      *
      * @param string $eventName
      * @return void
+     * @throws Exception
      */
     public function removeListeners($eventName = null)
     {
@@ -319,10 +323,10 @@ class EventManager
             $eventName = $this->cleanEventName($eventName);
         }
 
-        if (isset($this->_list[$eventName])) {
+        if (array_key_exists($eventName, $this->_list)) {
             unset($this->_list[$eventName]);
         } else {
-            $this->_list = [];
+            $this->_list = array();
         }
     }
 

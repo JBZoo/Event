@@ -43,7 +43,7 @@ class EventsTest extends PHPUnit
         $eManager->on('foo', $callback1, 200);
         $eManager->on('foo', $callback2, 100);
 
-        is([$callback2, $callback1], $eManager->getList('foo'));
+        is(array($callback2, $callback1), $eManager->getList('foo'));
     }
 
     /**
@@ -58,7 +58,7 @@ class EventsTest extends PHPUnit
             $argResult = $arg;
         });
 
-        isTrue($eManager->trigger('foo', ['bar']));
+        isTrue($eManager->trigger('foo', array('bar')));
         is('bar', $argResult);
     }
 
@@ -79,7 +79,7 @@ class EventsTest extends PHPUnit
             $argResult = 2;
         });
 
-        $result = $eManager->trigger('foo', ['bar']);
+        $result = $eManager->trigger('foo', array('bar'));
         is('Something wrong', $result);
         is(1, $argResult);
     }
@@ -102,14 +102,14 @@ class EventsTest extends PHPUnit
             throw new ExceptionStop('Something wrong #2');
         }, EventManager::MID);
 
-        is('Something wrong #2', $eManager->trigger('foo', ['bar']));
+        is('Something wrong #2', $eManager->trigger('foo', array('bar')));
         is(2, $argResult);
     }
 
 
     public function testPriority2()
     {
-        $result   = [];
+        $result   = array();
         $eManager = new EventManager();
 
         $eManager
@@ -133,7 +133,7 @@ class EventsTest extends PHPUnit
             }, EventManager::LOW)
             ->trigger('foo');
 
-        is(['a', 'b', 'c', 'd', 'e', 'f'], $result);
+        is(array('a', 'b', 'c', 'd', 'e', 'f'), $result);
     }
 
     public function testRemoveListener()
@@ -269,7 +269,7 @@ class EventsTest extends PHPUnit
                 throw new ExceptionStop('Something wrong #2');
             }, EventManager::HIGHEST);
 
-        is('Something wrong #2', $eManager->trigger('foo', ['bar']));
+        is('Something wrong #2', $eManager->trigger('foo', array('bar')));
         is(2, $argResult);
     }
 
@@ -287,7 +287,7 @@ class EventsTest extends PHPUnit
             });
 
         // Set true with $continueCallBack
-        $eManager->trigger('foo', [], function () use (&$testVar) {
+        $eManager->trigger('foo', array(), function () use (&$testVar) {
             $testVar = 1;
             return true;
         });
@@ -307,19 +307,19 @@ class EventsTest extends PHPUnit
             ->on('foo', function () use (&$testVar) {
                 $testVar++;
             })
-            ->trigger('foo', [], function () {
+            ->trigger('foo', array(), function () {
                 return false; // force fail after first action
             });
 
         is(1, $testVar);
 
-        $eManager->trigger('foo', [], function () {
+        $eManager->trigger('foo', array(), function () {
             return true; // force after first action
         });
         is(3, $testVar);
 
 
-        $eManager->trigger('foo', [], function () {
+        $eManager->trigger('foo', array(), function () {
         });
         is(5, $testVar);
     }
@@ -341,7 +341,7 @@ class EventsTest extends PHPUnit
                 $testVar++;
             });
 
-        is('Something wrong', $eManager->trigger('foo', [], function () {
+        is('Something wrong', $eManager->trigger('foo', array(), function () {
             // noop
         }));
 

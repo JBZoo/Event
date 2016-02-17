@@ -145,7 +145,7 @@ class EventsNamespacesTest extends PHPUnit
         });
         $eManager->on('*.save.after', function () {
         });
-        $eManager->on(['tag.*.*', 'item.*.*'], function () {
+        $eManager->on(array('tag.*.*', 'item.*.*'), function () {
         });
 
         is(1, $eManager->trigger('tag.init'));
