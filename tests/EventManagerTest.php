@@ -19,10 +19,10 @@ use JBZoo\Event\EventManager;
 use JBZoo\Event\ExceptionStop;
 
 /**
- * Class ManagerTest
+ * Class EventManagerTest
  * @package JBZoo\PHPUnit
  */
-class EventsTest extends PHPUnit
+class EventManagerTest extends PHPUnit
 {
     public function testInit()
     {
