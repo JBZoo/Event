@@ -115,13 +115,11 @@ class EventManager
      */
     public function trigger($eventName, array $arguments = array(), $continueCallback = null)
     {
-        $eventName = $this->cleanEventName($eventName);
-
         if (strpos($eventName, '*') !== false) {
             throw new Exception('Event name "' . $eventName . '" shouldn\'t contain symbol "*"');
         }
 
-        $listeners = $this->getList($eventName, false);
+        $listeners = $this->getList($eventName);
 
         if (null === $continueCallback) {
             $execCount = $this->_callListeners($listeners, $arguments);
@@ -207,15 +205,12 @@ class EventManager
      * their priority.
      *
      * @param string $eventName
-     * @param bool   $cleanup
      * @return callable[]
      * @throws Exception
      */
-    public function getList($eventName, $cleanup = true)
+    public function getList($eventName)
     {
-        if ($cleanup) {
-            $eventName = $this->cleanEventName($eventName);
-        }
+        $eventName = $this->cleanEventName($eventName);
 
         if ($eventName === '*') {
             throw new Exception('Unsafe event name!');
