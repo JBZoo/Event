@@ -118,7 +118,7 @@ class EventManager
         $eventName = $this->cleanEventName($eventName);
 
         if (strpos($eventName, '*') !== false) {
-            throw new ExceptionStop('Event contains "*"');
+            throw new Exception('Event name "' . $eventName . '" shouldn\'t contain symbol "*"');
         }
 
         $listeners = $this->getList($eventName);
