@@ -35,7 +35,7 @@ class PerformanceTest extends PHPUnit
             'One' => function () use ($eManager) {
                 $eManager->trigger('foo');
             },
-        ), array('name' => 'One callback', 'count' => 1000));
+        ), array('name' => 'One callback', 'count' => 10000));
     }
 
     public function testManyCallBacks()

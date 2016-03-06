@@ -73,7 +73,7 @@ class EventManager
     public function once($eventName, $callBack, $priority = 100)
     {
         $eventName = $this->cleanEventName($eventName);
-        $eManager = $this;
+        $eManager  = $this;
 
         $wrapper = null;
         $wrapper = function () use ($eventName, $callBack, &$wrapper, $eManager) {
@@ -121,7 +121,7 @@ class EventManager
             throw new Exception('Event name "' . $eventName . '" shouldn\'t contain symbol "*"');
         }
 
-        $listeners = $this->getList($eventName);
+        $listeners = $this->getList($eventName, false);
 
         if (null === $continueCallback) {
             $execCount = $this->_callListeners($listeners, $arguments);
@@ -207,12 +207,15 @@ class EventManager
      * their priority.
      *
      * @param string $eventName
+     * @param bool   $cleanup
      * @return callable[]
      * @throws Exception
      */
-    public function getList($eventName)
+    public function getList($eventName, $cleanup = true)
     {
-        $eventName = $this->cleanEventName($eventName);
+        if ($cleanup) {
+            $eventName = $this->cleanEventName($eventName);
+        }
 
         if ($eventName === '*') {
             throw new Exception('Unsafe event name!');
@@ -340,9 +343,9 @@ class EventManager
     public function cleanEventName($eventName)
     {
         $eventName = strtolower($eventName);
-        $eventName = preg_replace('#[^[:alnum:]\*\.]#', '', $eventName);
-        $eventName = preg_replace('#\.{2,}#', '.', $eventName);
+        $eventName = str_replace('..', '.', $eventName);
         $eventName = trim($eventName, '.');
+        $eventName = trim($eventName);
 
         if (!$eventName) {
             throw new Exception('Event name is empty!');
