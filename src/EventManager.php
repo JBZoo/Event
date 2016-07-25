@@ -77,10 +77,8 @@ class EventManager
 
         $wrapper = null;
         $wrapper = function () use ($eventName, $callBack, &$wrapper, $eManager) {
-
             $eManager->removeListener($eventName, $wrapper);
             return call_user_func_array($callBack, func_get_args());
-
         };
 
         return $this->on($eventName, $wrapper, $priority);
