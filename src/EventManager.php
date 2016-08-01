@@ -211,7 +211,7 @@ class EventManager
         $eventName = $this->cleanEventName($eventName);
 
         if ($eventName === '*') {
-            throw new Exception('Unsafe event name!');
+            throw new Exception('* is unsafe event name!');
         }
 
         $result = array();
