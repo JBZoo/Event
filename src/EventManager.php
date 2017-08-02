@@ -28,6 +28,11 @@ class EventManager
     const HIGHEST = 1000;
 
     /**
+     * @var EventManager
+     */
+    static protected $defaultManager;
+
+    /**
      * The list of listeners
      * @var array
      */
@@ -347,5 +352,21 @@ class EventManager
         }
 
         return $eventName;
+    }
+
+    /**
+     * @param EventManager $eManager
+     */
+    public static function setDefault(EventManager $eManager)
+    {
+        self::$defaultManager = $eManager;
+    }
+
+    /**
+     * @return EventManager
+     */
+    public static function getDefault()
+    {
+        return self::$defaultManager;
     }
 }
