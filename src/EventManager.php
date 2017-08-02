@@ -30,7 +30,7 @@ class EventManager
     /**
      * @var EventManager
      */
-    static protected $defaultManager;
+    static protected $_defaultManager;
 
     /**
      * The list of listeners
@@ -359,7 +359,7 @@ class EventManager
      */
     public static function setDefault(EventManager $eManager)
     {
-        self::$defaultManager = $eManager;
+        self::$_defaultManager = $eManager;
     }
 
     /**
@@ -367,6 +367,6 @@ class EventManager
      */
     public static function getDefault()
     {
-        return self::$defaultManager;
+        return self::$_defaultManager;
     }
 }
