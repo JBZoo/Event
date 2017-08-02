@@ -18,7 +18,8 @@
         }
     ],
     "require"           : {
-        "php" : ">=5.3"
+        "php"            : ">=5.3",
+        "jbzoo/profiler" : "^1.0"
     },
     "require-dev"       : {
         "jbzoo/phpunit" : "^1.0"

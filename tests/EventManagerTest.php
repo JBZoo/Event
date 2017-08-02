@@ -17,9 +17,11 @@ namespace JBZoo\PHPUnit;
 
 use JBZoo\Event\EventManager;
 use JBZoo\Event\ExceptionStop;
+use JBZoo\Utils\Str;
 
 /**
  * Class EventManagerTest
+ *
  * @package JBZoo\PHPUnit
  */
 class EventManagerTest extends PHPUnit
@@ -28,6 +30,20 @@ class EventManagerTest extends PHPUnit
     {
         $eManager = new EventManager();
         $this->assertInstanceOf('JBZoo\\Event\\EventManager', $eManager);
+    }
+
+    public function testLastArgument()
+    {
+        $eManager = new EventManager();
+        $eventName = 'event_' . Str::random();
+
+        $callback = function () use ($eventName) {
+            $args = func_get_args();
+            isSame($eventName, end($args));
+        };
+
+        $eManager->on($eventName, $callback);
+        isSame(1, $eManager->trigger($eventName, ['1', 2, 3, 5]));
     }
 
     public function testListeners()
@@ -43,7 +59,7 @@ class EventManagerTest extends PHPUnit
         $eManager->on('foo', $callback1, 200);
         $eManager->on('foo', $callback2, 100);
 
-        is(array($callback2, $callback1), $eManager->getList('foo'));
+        is([$callback2, $callback1], $eManager->getList('foo'));
     }
 
     /**
@@ -58,7 +74,7 @@ class EventManagerTest extends PHPUnit
             $argResult = $arg;
         });
 
-        isTrue($eManager->trigger('foo', array('bar')));
+        isTrue($eManager->trigger('foo', ['bar']));
         is('bar', $argResult);
     }
 
@@ -79,7 +95,7 @@ class EventManagerTest extends PHPUnit
             $argResult = 2;
         });
 
-        $result = $eManager->trigger('foo', array('bar'));
+        $result = $eManager->trigger('foo', ['bar']);
         is('Something wrong', $result);
         is(1, $argResult);
     }
@@ -102,14 +118,14 @@ class EventManagerTest extends PHPUnit
             throw new ExceptionStop('Something wrong #2');
         }, EventManager::MID);
 
-        is('Something wrong #2', $eManager->trigger('foo', array('bar')));
+        is('Something wrong #2', $eManager->trigger('foo', ['bar']));
         is(2, $argResult);
     }
 
 
     public function testPriority2()
     {
-        $result   = array();
+        $result = [];
         $eManager = new EventManager();
 
         $eManager
@@ -133,12 +149,12 @@ class EventManagerTest extends PHPUnit
             }, EventManager::LOW)
             ->trigger('foo');
 
-        is(array('a', 'b', 'c', 'd', 'e', 'f'), $result);
+        is(['a', 'b', 'c', 'd', 'e', 'f'], $result);
     }
 
     public function testRemoveListener()
     {
-        $result   = false;
+        $result = false;
         $eManager = new EventManager();
 
         $callback = function () use (&$result) {
@@ -199,7 +215,7 @@ class EventManagerTest extends PHPUnit
 
     public function testRemoveAllListeners()
     {
-        $result   = false;
+        $result = false;
         $callback = function () use (&$result) {
             $result = true;
         };
@@ -218,7 +234,7 @@ class EventManagerTest extends PHPUnit
 
     public function testRemoveAllListenersNoArg()
     {
-        $result   = false;
+        $result = false;
         $callback = function () use (&$result) {
             $result = true;
         };
@@ -269,7 +285,7 @@ class EventManagerTest extends PHPUnit
                 throw new ExceptionStop('Something wrong #2');
             }, EventManager::HIGHEST);
 
-        is('Something wrong #2', $eManager->trigger('foo', array('bar')));
+        is('Something wrong #2', $eManager->trigger('foo', ['bar']));
         is(2, $argResult);
     }
 
@@ -287,7 +303,7 @@ class EventManagerTest extends PHPUnit
             });
 
         // Set true with $continueCallBack
-        $eManager->trigger('foo', array(), function () use (&$testVar) {
+        $eManager->trigger('foo', [], function () use (&$testVar) {
             $testVar = 1;
             return true;
         });
@@ -297,7 +313,7 @@ class EventManagerTest extends PHPUnit
 
     public function testCallbackFail()
     {
-        $testVar  = 0;
+        $testVar = 0;
         $eManager = new EventManager();
 
         $eManager
@@ -307,19 +323,19 @@ class EventManagerTest extends PHPUnit
             ->on('foo', function () use (&$testVar) {
                 $testVar++;
             })
-            ->trigger('foo', array(), function () {
+            ->trigger('foo', [], function () {
                 return false; // force fail after first action
             });
 
         is(1, $testVar);
 
-        $eManager->trigger('foo', array(), function () {
+        $eManager->trigger('foo', [], function () {
             return true; // force after first action
         });
         is(3, $testVar);
 
 
-        $eManager->trigger('foo', array(), function () {
+        $eManager->trigger('foo', [], function () {
         });
         is(5, $testVar);
     }
@@ -341,7 +357,7 @@ class EventManagerTest extends PHPUnit
                 $testVar++;
             });
 
-        is('Something wrong', $eManager->trigger('foo', array(), function () {
+        is('Something wrong', $eManager->trigger('foo', [], function () {
             // noop
         }));
 

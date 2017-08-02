@@ -119,6 +119,8 @@ class EventManager
 
         $listeners = $this->getList($eventName);
 
+        $arguments[] = $eventName;
+
         if (null === $continueCallback) {
             $execCount = $this->_callListeners($listeners, $arguments);
         } else {
