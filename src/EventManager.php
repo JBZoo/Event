@@ -369,4 +369,19 @@ class EventManager
     {
         return self::$_defaultManager;
     }
+
+    /**
+     * @return array
+     */
+    public function getSummeryInfo()
+    {
+        $result = [];
+        foreach ($this->_list as $eventName => $callbacks) {
+            $result[$eventName] = count($callbacks);
+        }
+
+        ksort($result);
+
+        return $result;
+    }
 }
