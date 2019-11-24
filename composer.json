@@ -20,11 +20,13 @@
 
     "require"           : {
         "php" : ">=7.1"
+
     },
 
     "require-dev"       : {
         "jbzoo/phpunit"  : "^3.0",
-        "jbzoo/profiler" : "^1.0.5"
+        "jbzoo/profiler" : "^1.0.5",
+        "jbzoo/misc"     : "^1.2.0"
     },
 
     "autoload"          : {
