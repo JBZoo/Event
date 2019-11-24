@@ -6,11 +6,10 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  *
- * @package   Event
- * @license   MIT
- * @copyright Copyright (C) JBZoo.com,  All rights reserved.
- * @link      https://github.com/JBZoo/Event
- * @author    Denis Smetannikov <denis@jbzoo.com>
+ * @package    Event
+ * @license    MIT
+ * @copyright  Copyright (C) JBZoo.com, All rights reserved.
+ * @link       https://github.com/JBZoo/Event
  */
 
 namespace JBZoo\Event;
@@ -21,22 +20,22 @@ namespace JBZoo\Event;
  */
 class EventManager
 {
-    const LOWEST  = 0;
-    const LOW     = 50;
-    const MID     = 100; // Default
-    const HIGH    = 500;
-    const HIGHEST = 1000;
+    public const LOWEST  = 0;
+    public const LOW     = 50;
+    public const MID     = 100; // Default
+    public const HIGH    = 500;
+    public const HIGHEST = 1000;
 
     /**
      * @var EventManager
      */
-    static protected $_defaultManager;
+    static protected $defaultManager;
 
     /**
      * The list of listeners
      * @var array
      */
-    protected $_list = array();
+    protected $list = [];
 
     /**
      * Subscribe to an event.
@@ -56,11 +55,11 @@ class EventManager
         foreach ($eventNames as $oneEventName) {
             $oneEventName = $this->cleanEventName($oneEventName);
 
-            if (!array_key_exists($oneEventName, $this->_list)) {
-                $this->_list[$oneEventName] = array();
+            if (!array_key_exists($oneEventName, $this->list)) {
+                $this->list[$oneEventName] = [];
             }
 
-            $this->_list[$oneEventName][] = array((int)$priority, $callback, $oneEventName);
+            $this->list[$oneEventName][] = [(int)$priority, $callback, $oneEventName];
         }
 
         return $this;
@@ -78,7 +77,7 @@ class EventManager
     public function once($eventName, $callBack, $priority = 100)
     {
         $eventName = $this->cleanEventName($eventName);
-        $eManager  = $this;
+        $eManager = $this;
 
         $wrapper = null;
         $wrapper = function () use ($eventName, $callBack, &$wrapper, $eManager) {
@@ -92,7 +91,7 @@ class EventManager
     /**
      * Emits an event.
      *
-     * This method will return true if 0 or more listeners were succesfully
+     * This method will return true if 0 or more listeners were successful
      * handled. false is returned if one of the events broke the event chain.
      *
      * If the continueCallBack is specified, this callback will be called every
@@ -116,7 +115,7 @@ class EventManager
      * @return int|string
      * @throws Exception
      */
-    public function trigger($eventName, array $arguments = array(), $continueCallback = null)
+    public function trigger($eventName, array $arguments = [], $continueCallback = null)
     {
         if (strpos($eventName, '*') !== false) {
             throw new Exception('Event name "' . $eventName . '" shouldn\'t contain symbol "*"');
@@ -166,7 +165,7 @@ class EventManager
      */
     protected function _callListenersWithCallback($listeners, array $arguments, $continueCallback)
     {
-        $counter   = count($listeners);
+        $counter = count($listeners);
         $execCount = 0;
 
         foreach ($listeners as $listener) {
@@ -221,18 +220,17 @@ class EventManager
             throw new Exception('* is unsafe event name!');
         }
 
-        $result = array();
+        $result = [];
         $ePaths = explode('.', $eventName);
 
-        foreach ($this->_list as $eName => $eData) {
-
+        foreach ($this->list as $eName => $eData) {
             if ($eName === $eventName) {
+                /** @noinspection SlowArrayOperationsInLoopInspection */
                 $result = array_merge($result, $eData);
-
             } elseif (strpos($eName, '*') !== false) {
                 $eNameParts = explode('.', $eName);
-
                 if ($this->_isContainPart($eNameParts, $ePaths)) {
+                    /** @noinspection SlowArrayOperationsInLoopInspection */
                     $result = array_merge($result, $eData);
                 }
             }
@@ -249,7 +247,7 @@ class EventManager
             }, $result);
         }
 
-        return array();
+        return [];
     }
 
     /**
@@ -261,7 +259,7 @@ class EventManager
      */
     protected function _isContainPart($eNameParts, $ePaths)
     {
-        // Length of parts is equels
+        // Length of parts is equals
         if (count($eNameParts) !== count($ePaths)) {
             return false;
         }
@@ -294,14 +292,14 @@ class EventManager
     {
         $eventName = $this->cleanEventName($eventName);
 
-        if (!array_key_exists($eventName, $this->_list)) {
+        if (!array_key_exists($eventName, $this->list)) {
             return false;
         }
 
-        foreach ($this->_list[$eventName] as $index => $eventData) {
+        foreach ($this->list[$eventName] as $index => $eventData) {
 
             if ($eventData[1] === $listener) {
-                unset($this->_list[$eventName][$index]);
+                unset($this->list[$eventName][$index]);
                 return true;
             }
         }
@@ -326,15 +324,15 @@ class EventManager
             $eventName = $this->cleanEventName($eventName);
         }
 
-        if (array_key_exists($eventName, $this->_list)) {
-            unset($this->_list[$eventName]);
+        if (array_key_exists($eventName, $this->list)) {
+            unset($this->list[$eventName]);
         } else {
-            $this->_list = array();
+            $this->list = [];
         }
     }
 
     /**
-     * Prepare event namebefore using
+     * Prepare event name before using
      *
      * @param string $eventName
      * @return string
@@ -343,6 +341,7 @@ class EventManager
     public function cleanEventName($eventName)
     {
         $eventName = strtolower($eventName);
+        /** @noinspection CallableParameterUseCaseInTypeContextInspection */
         $eventName = str_replace('..', '.', $eventName);
         $eventName = trim($eventName, '.');
         $eventName = trim($eventName);
@@ -359,7 +358,7 @@ class EventManager
      */
     public static function setDefault(EventManager $eManager)
     {
-        self::$_defaultManager = $eManager;
+        self::$defaultManager = $eManager;
     }
 
     /**
@@ -367,7 +366,7 @@ class EventManager
      */
     public static function getDefault()
     {
-        return self::$_defaultManager;
+        return self::$defaultManager;
     }
 
     /**
@@ -376,7 +375,7 @@ class EventManager
     public function getSummeryInfo()
     {
         $result = [];
-        foreach ($this->_list as $eventName => $callbacks) {
+        foreach ($this->list as $eventName => $callbacks) {
             $result[$eventName] = count($callbacks);
         }
 

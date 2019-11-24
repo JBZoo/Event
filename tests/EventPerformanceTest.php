@@ -6,24 +6,26 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  *
- * @package   Event
- * @license   MIT
- * @copyright Copyright (C) JBZoo.com,  All rights reserved.
- * @link      https://github.com/JBZoo/Event
- * @author    Denis Smetannikov <denis@jbzoo.com>
+ * @package    Event
+ * @license    MIT
+ * @copyright  Copyright (C) JBZoo.com, All rights reserved.
+ * @link       https://github.com/JBZoo/Event
  */
 
 namespace JBZoo\PHPUnit;
 
 use JBZoo\Event\EventManager;
+use JBZoo\Profiler\Benchmark;
 
 /**
- * Class PerformanceTest
+ * Class EventPerformanceTest
  * @package JBZoo\Event
  * @coversNothing
  */
-class PerformanceTest extends PHPUnit
+class EventPerformanceTest extends PHPUnit
 {
+    const ITERATIONS = 10000;
+
     public function testOneCallBack()
     {
         $eManager = new EventManager();
@@ -31,11 +33,13 @@ class PerformanceTest extends PHPUnit
             // noop
         });
 
-        runBench(array(
+        Benchmark::compare([
             'One' => function () use ($eManager) {
                 $eManager->trigger('foo');
             },
-        ), array('name' => 'One callback', 'count' => 10000));
+        ], ['name' => 'One callback', 'count' => self::ITERATIONS]);
+
+        isTrue(true);
     }
 
     public function testManyCallBacks()
@@ -48,11 +52,13 @@ class PerformanceTest extends PHPUnit
             });
         }
 
-        runBench(array(
+        Benchmark::compare([
             'Many' => function () use ($eManager) {
                 $eManager->trigger('foo');
             },
-        ), array('name' => 'Many callback', 'count' => 1000));
+        ], ['name' => 'Many callback', 'count' => self::ITERATIONS]);
+
+        isTrue(true);
     }
 
     public function testManyPrioritizedCallBacks()
@@ -65,23 +71,25 @@ class PerformanceTest extends PHPUnit
             }, 1000 - $i);
         }
 
-        runBench(array(
+        Benchmark::compare([
             'Many' => function () use ($eManager) {
                 $eManager->trigger('foo');
             },
-        ), array('name' => 'Many Prioritized CallBacks', 'count' => 1000));
+        ], ['name' => 'Many Prioritized CallBacks', 'count' => self::ITERATIONS]);
+
+        isTrue(true);
     }
 
     public function testComplexRandom()
     {
         $eManager = new EventManager();
 
-        $parts = array('foo', 'bar', 'woo', 'bazz', '*', '*', '*');
+        $parts = ['foo', 'bar', 'woo', 'bazz', '*', '*', '*'];
 
         for ($i = 0; $i < 100; $i++) {
 
             shuffle($parts);
-            $partsRand = implode('.', array_slice($parts, 0, mt_rand(1, count($parts))));
+            $partsRand = implode('.', array_slice($parts, 0, random_int(1, count($parts))));
 
             if ($partsRand === '*') {
                 $partsRand .= '.foo';
@@ -89,18 +97,20 @@ class PerformanceTest extends PHPUnit
 
             $eManager->on($partsRand, function () {
                 // noop
-            }, mt_rand(0, $i));
+            }, random_int(0, $i));
         }
 
-        runBench(array(
+        Benchmark::compare([
             'Many' => function () use ($eManager) {
 
-                $parts = array('foo', 'bar', 'woo', 'bazz');
+                $parts = ['foo', 'bar', 'woo', 'bazz'];
                 shuffle($parts);
-                $partsRand = implode('.', array_slice($parts, 0, mt_rand(1, count($parts))));
+                $partsRand = implode('.', array_slice($parts, 0, random_int(1, count($parts))));
 
                 $eManager->trigger($partsRand);
             },
-        ), array('name' => 'Complex random', 'count' => 1000));
+        ], ['name' => 'Complex random', 'count' => self::ITERATIONS]);
+
+        isTrue(true);
     }
 }

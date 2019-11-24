@@ -12,15 +12,14 @@
  * @link       https://github.com/JBZoo/Event
  */
 
+namespace JBZoo\PHPUnit;
 
-if (!defined('ROOT_PATH')) { // for PHPUnit process isolation
-    define('ROOT_PATH', realpath('.'));
-}
-
-// main autoload
-if ($autoload = realpath('./vendor/autoload.php')) {
-    require_once $autoload;
-} else {
-    echo 'Please execute "composer update" !' . PHP_EOL;
-    exit(1);
+/**
+ * Class EventCodestyleTest
+ * @package JBZoo\PHPUnit
+ */
+class EventCodestyleTest extends Codestyle
+{
+    protected $_packageName   = 'Event';
+    protected $_packageAuthor = 'Denis Smetannikov <denis@jbzoo.com>';
 }

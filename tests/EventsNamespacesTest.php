@@ -6,17 +6,15 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  *
- * @package   Event
- * @license   MIT
- * @copyright Copyright (C) JBZoo.com,  All rights reserved.
- * @link      https://github.com/JBZoo/Event
- * @author    Denis Smetannikov <denis@jbzoo.com>
+ * @package    Event
+ * @license    MIT
+ * @copyright  Copyright (C) JBZoo.com, All rights reserved.
+ * @link       https://github.com/JBZoo/Event
  */
 
 namespace JBZoo\PHPUnit;
 
 use JBZoo\Event\EventManager;
-use JBZoo\Event\ExceptionStop;
 
 /**
  * Class EventsNamespacesTest
@@ -29,7 +27,7 @@ class EventsNamespacesTest extends PHPUnit
      */
     protected $noop;
 
-    protected function setUp()
+    protected function setUp(): void
     {
         $this->noop = function () {
         };
@@ -145,7 +143,7 @@ class EventsNamespacesTest extends PHPUnit
         });
         $eManager->on('*.save.after', function () {
         });
-        $eManager->on(array('tag.*.*', 'item.*.*'), function () {
+        $eManager->on(['tag.*.*', 'item.*.*'], function () {
         });
 
         is(1, $eManager->trigger('tag.init'));

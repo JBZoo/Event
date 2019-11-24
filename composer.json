@@ -17,26 +17,26 @@
             "homepage" : "http://sabre.io/event/"
         }
     ],
+
     "require"           : {
-        "php"            : ">=5.4",
-        "jbzoo/profiler" : "^1.0"
+        "php" : ">=7.1"
     },
+
     "require-dev"       : {
-        "jbzoo/phpunit" : "^1.0"
+        "jbzoo/phpunit"  : "^3.0",
+        "jbzoo/profiler" : "^1.0.5"
     },
+
     "autoload"          : {
         "psr-4" : {
             "JBZoo\\Event\\" : "src"
         }
     },
-    "extra"             : {
-        "branch-alias" : {
-            "dev-master" : "1.x-dev"
-        }
-    },
+
     "config"            : {
         "optimize-autoloader" : true
     },
+
     "support"           : {
         "issues" : "https://github.com/JBZoo/Event/issues"
     }

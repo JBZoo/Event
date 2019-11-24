@@ -6,11 +6,10 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  *
- * @package   Event
- * @license   MIT
- * @copyright Copyright (C) JBZoo.com,  All rights reserved.
- * @link      https://github.com/JBZoo/Event
- * @author    Denis Smetannikov <denis@jbzoo.com>
+ * @package    Event
+ * @license    MIT
+ * @copyright  Copyright (C) JBZoo.com, All rights reserved.
+ * @link       https://github.com/JBZoo/Event
  */
 
 namespace JBZoo\PHPUnit;
@@ -29,7 +28,7 @@ class EventManagerTest extends PHPUnit
     public function testInit()
     {
         $eManager = new EventManager();
-        $this->assertInstanceOf('JBZoo\\Event\\EventManager', $eManager);
+        $this->assertInstanceOf(EventManager::class, $eManager);
     }
 
     public function testLastArgument()
@@ -390,58 +389,52 @@ class EventManagerTest extends PHPUnit
         //is('foo', $eManager->cleanEventName('FOO.#$%^&()')); // too slow
     }
 
-    /**
-     * @expectedException \JBZoo\Event\Exception
-     */
     public function testEmptyTrigger()
     {
+        $this->expectException(\JBZoo\Event\Exception::class);
+
         $eManager = new EventManager();
         $eManager->trigger(' ');
     }
 
-    /**
-     * @expectedException \JBZoo\Event\Exception
-     */
     public function testTriggerAll()
     {
+        $this->expectException(\JBZoo\Event\Exception::class);
+
         $eManager = new EventManager();
         $eManager->trigger(' * ');
     }
 
-    /**
-     * @expectedException \JBZoo\Event\Exception
-     */
     public function testListenersEmpty()
     {
+        $this->expectException(\JBZoo\Event\Exception::class);
+
         $eManager = new EventManager();
         $eManager->getList(' ');
     }
 
-    /**
-     * @expectedException \JBZoo\Event\Exception
-     */
     public function testListenersAll()
     {
+        $this->expectException(\JBZoo\Event\Exception::class);
+
         $eManager = new EventManager();
         $eManager->getList('*');
     }
 
-    /**
-     * @expectedException \JBZoo\Event\Exception
-     */
     public function testEmptyEventNameOn()
     {
+        $this->expectException(\JBZoo\Event\Exception::class);
+
         $eManager = new EventManager();
         $eManager->on(' ', function () {
 
         });
     }
 
-    /**
-     * @expectedException \JBZoo\Event\Exception
-     */
     public function testEmptyEventNameTrigger()
     {
+        $this->expectException(\JBZoo\Event\Exception::class);
+
         $eManager = new EventManager();
         $eManager->trigger(' ');
     }
