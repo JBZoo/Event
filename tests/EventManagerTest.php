@@ -45,6 +45,14 @@ class EventManagerTest extends PHPUnit
         $this->assertInstanceOf(EventManager::class, $eManager);
     }
 
+    public function testDefault()
+    {
+        $eManager = new EventManager();
+
+        EventManager::setDefault($eManager);
+        isSame($eManager, EventManager::getDefault());
+    }
+
     public function testLastArgument()
     {
         $eManager = new EventManager();
