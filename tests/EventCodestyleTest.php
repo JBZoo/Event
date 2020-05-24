@@ -1,8 +1,9 @@
 <?php
+
 /**
- * JBZoo Event
+ * JBZoo Toolbox - Event
  *
- * This file is part of the JBZoo CCK package.
+ * This file is part of the JBZoo Toolbox project.
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  *
@@ -15,11 +16,10 @@
 namespace JBZoo\PHPUnit;
 
 /**
- * Class EventCodestyleTest
+ * Class CodestyleCodestyleTest
  * @package JBZoo\PHPUnit
  */
-class EventCodestyleTest extends Codestyle
+class EventCodestyleTest extends AbstractCopyrightTest
 {
-    protected $_packageName   = 'Event';
-    protected $_packageAuthor = 'Denis Smetannikov <denis@jbzoo.com>';
+    protected $packageName = "Event";
 }

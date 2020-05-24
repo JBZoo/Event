@@ -1,8 +1,9 @@
 <?php
+
 /**
- * JBZoo Event
+ * JBZoo Toolbox - Event
  *
- * This file is part of the JBZoo CCK package.
+ * This file is part of the JBZoo Toolbox project.
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  *
@@ -25,6 +26,19 @@ use JBZoo\Utils\Str;
  */
 class EventManagerTest extends PHPUnit
 {
+    /**
+     * @var \Closure
+     */
+    protected $noop;
+
+    protected function setUp(): void
+    {
+        parent::setUp();
+
+        $this->noop = function () {
+        };
+    }
+
     public function testInit()
     {
         $eManager = new EventManager();
@@ -120,7 +134,6 @@ class EventManagerTest extends PHPUnit
         is('Something wrong #2', $eManager->trigger('foo', ['bar']));
         is(2, $argResult);
     }
-
 
     public function testPriority2()
     {
@@ -317,76 +330,83 @@ class EventManagerTest extends PHPUnit
 
         $eManager
             ->on('foo', function () use (&$testVar) {
-                $testVar++;
+                $testVar += 2;
             })
             ->on('foo', function () use (&$testVar) {
-                $testVar++;
+                $testVar += 4;
             })
             ->trigger('foo', [], function () {
                 return false; // force fail after first action
             });
 
-        is(1, $testVar);
+        is(2, $testVar);
 
         $eManager->trigger('foo', [], function () {
             return true; // force after first action
         });
-        is(3, $testVar);
+        is(8, $testVar);
 
 
         $eManager->trigger('foo', [], function () {
         });
-        is(5, $testVar);
+
+        is(10, $testVar);
+
+        $eManager->trigger('foo');
+        is(16, $testVar);
     }
 
-    public function testStopViaContinueCallBack()
+    public function testStopViaContinueCallback()
     {
         $testVar = 0;
 
         $eManager = new EventManager();
         $eManager
             ->on('foo', function () use (&$testVar) {
-                $testVar++;
-            })
+                $testVar += 2;
+            }, 3)
             ->on('foo', function () use (&$testVar) {
-                $testVar++;
+                $testVar += 4;
                 throw new ExceptionStop('Something wrong');
-            })
+            }, 2)
             ->on('foo', function () use (&$testVar) {
-                $testVar++;
-            });
+                $testVar += 8;
+            }, 1);
 
-        is('Something wrong', $eManager->trigger('foo', [], function () {
+        is(0, $testVar);
+
+        $eManager->trigger('foo', [], function () {
             // noop
-        }));
+        });
 
         is(2, $testVar);
     }
 
-
-    public function testEventnameCleaner()
+    public function testEventNameCleaner()
     {
         $eManager = new EventManager();
 
         is('foo', $eManager->cleanEventName('FOO'));
         is('foo', $eManager->cleanEventName('FOO.'));
         is('foo', $eManager->cleanEventName('.FOO.'));
-        //is('foo', $eManager->cleanEventName(' . FOO . ')); // too slow
-        is('foo.bar', $eManager->cleanEventName('FOO.bar'));
-        //is('foo.bar', $eManager->cleanEventName('FOO . bar'));
 
+        is('foo.bar', $eManager->cleanEventName('FOO.bar'));
+
+        is('*', $eManager->cleanEventName('*'));
+        is('foo.*', $eManager->cleanEventName('FOO.*'));
+        is('foo.*', $eManager->cleanEventName('FOO.*.'));
+        is('foo.123', $eManager->cleanEventName('FOO.123'));
+
+        // too slow to handle the next cases
+        //is('foo', $eManager->cleanEventName(' . FOO . '));
+        //is('foo.bar', $eManager->cleanEventName('FOO . bar'));
         //is('foo.bar', $eManager->cleanEventName('FOO . bar'));
         //is('foo.bar', $eManager->cleanEventName('FOO . bar'));
         //is('foo.bar', $eManager->cleanEventName('FOO .. bar'));
         //is('foo.bar', $eManager->cleanEventName('FOO ... bar'));
         //is('foo.bar', $eManager->cleanEventName('FOO .... bar'));
         //is('foo.bar', $eManager->cleanEventName('FOO .. . . bar'));
-
-        is('*', $eManager->cleanEventName('*'));
-        is('foo.*', $eManager->cleanEventName('FOO.*'));
-        is('foo.*', $eManager->cleanEventName('FOO.*.'));
-        is('foo.123', $eManager->cleanEventName('FOO.123'));
-        //is('foo', $eManager->cleanEventName('FOO.#$%^&()')); // too slow
+        //is('foo', $eManager->cleanEventName('FOO.#$%^&()'));
     }
 
     public function testEmptyTrigger()
@@ -397,14 +417,6 @@ class EventManagerTest extends PHPUnit
         $eManager->trigger(' ');
     }
 
-    public function testTriggerAll()
-    {
-        $this->expectException(\JBZoo\Event\Exception::class);
-
-        $eManager = new EventManager();
-        $eManager->trigger(' * ');
-    }
-
     public function testListenersEmpty()
     {
         $this->expectException(\JBZoo\Event\Exception::class);
@@ -413,12 +425,48 @@ class EventManagerTest extends PHPUnit
         $eManager->getList(' ');
     }
 
-    public function testListenersAll()
+    public function testRunAll()
     {
-        $this->expectException(\JBZoo\Event\Exception::class);
+        $testVar = 0;
 
         $eManager = new EventManager();
-        $eManager->getList('*');
+
+        $eManager
+            ->on('*', function () use (&$testVar) {
+                $testVar += 2;
+            })
+            ->on('*.*', function () use (&$testVar) {
+                $testVar += 4;
+            })
+            ->on('foo.qwerty', function () use (&$testVar) {
+                $testVar += 8;
+            });
+
+        $eManager->trigger('foo.qwerty');
+        isSame(12, $testVar);
+
+        $eManager->trigger('foo');
+        isSame(14, $testVar);
+    }
+
+    public function testGetList()
+    {
+        $eManager = new EventManager();
+
+        $eManager
+            ->on('foo', $this->noop)
+            ->on('*', $this->noop)
+            ->on('foo.bar', $this->noop)
+            ->on('*.*', $this->noop)
+            ->on('foo', $this->noop)
+            ->once('foo', $this->noop);
+
+        isSame([
+            '*'       => 1,
+            '*.*'     => 1,
+            'foo'     => 3,
+            'foo.bar' => 1
+        ], $eManager->getSummeryInfo());
     }
 
     public function testEmptyEventNameOn()
@@ -427,7 +475,6 @@ class EventManagerTest extends PHPUnit
 
         $eManager = new EventManager();
         $eManager->on(' ', function () {
-
         });
     }
 

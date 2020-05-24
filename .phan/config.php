@@ -11,15 +11,13 @@
  * @license    MIT
  * @copyright  Copyright (C) JBZoo.com, All rights reserved.
  * @link       https://github.com/JBZoo/Event
+ * @author     Denis Smetannikov <denis@jbzoo.com>
  */
 
-namespace JBZoo\Event;
+$default = include __DIR__ . '/../vendor/jbzoo/codestyle/src/phan/default.php';
 
-/**
- * Class ExceptionStop
- * @package JBZoo\Event
- */
-class ExceptionStop extends Exception
-{
-
-}
+return array_merge($default, [
+    'directory_list' => [
+        'src',
+    ]
+]);

@@ -13,13 +13,12 @@
  * @link       https://github.com/JBZoo/Event
  */
 
-namespace JBZoo\Event;
+namespace JBZoo\PHPUnit;
 
 /**
- * Class ExceptionStop
- * @package JBZoo\Event
+ * Class CodestyleCopyrightsTest
+ * @package JBZoo\PHPUnit
  */
-class ExceptionStop extends Exception
+class EventCopyrightsTest extends AbstractCodestyleTest
 {
-
 }

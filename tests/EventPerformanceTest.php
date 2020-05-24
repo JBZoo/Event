@@ -1,8 +1,9 @@
 <?php
+
 /**
- * JBZoo Event
+ * JBZoo Toolbox - Event
  *
- * This file is part of the JBZoo CCK package.
+ * This file is part of the JBZoo Toolbox project.
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  *
@@ -16,6 +17,7 @@ namespace JBZoo\PHPUnit;
 
 use JBZoo\Event\EventManager;
 use JBZoo\Profiler\Benchmark;
+use JBZoo\Utils\Sys;
 
 /**
  * Class EventPerformanceTest
@@ -24,7 +26,16 @@ use JBZoo\Profiler\Benchmark;
  */
 class EventPerformanceTest extends PHPUnit
 {
-    const ITERATIONS = 10000;
+    const ITERATIONS = 100000;
+
+    protected function setUp(): void
+    {
+        if (Sys::hasXdebug()) {
+            skip('xDebug is enabled. Test is skipped.');
+        }
+
+        parent::setUp();
+    }
 
     public function testOneCallBack()
     {
@@ -87,7 +98,6 @@ class EventPerformanceTest extends PHPUnit
         $parts = ['foo', 'bar', 'woo', 'bazz', '*', '*', '*'];
 
         for ($i = 0; $i < 100; $i++) {
-
             shuffle($parts);
             $partsRand = implode('.', array_slice($parts, 0, random_int(1, count($parts))));
 

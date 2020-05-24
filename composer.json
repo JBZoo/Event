@@ -7,7 +7,7 @@
     "minimum-stability" : "stable",
     "authors"           : [
         {
-            "name"  : "SmetDenis",
+            "name"  : "Denis Smetannikov",
             "email" : "denis@jbzoo.com",
             "role"  : "lead"
         },
@@ -20,13 +20,13 @@
 
     "require"           : {
         "php" : ">=7.1"
-
     },
 
     "require-dev"       : {
-        "jbzoo/phpunit"  : "^3.0",
-        "jbzoo/profiler" : "^1.0.5",
-        "jbzoo/misc"     : "^1.2.0"
+        "jbzoo/phpunit"   : "dev-master",
+        "jbzoo/codestyle" : "dev-master",
+        "jbzoo/profiler"  : "^1.0.5",
+        "symfony/var-dumper" : "^5.0.8"
     },
 
     "autoload"          : {
@@ -35,11 +35,9 @@
         }
     },
 
-    "config"            : {
-        "optimize-autoloader" : true
-    },
-
-    "support"           : {
-        "issues" : "https://github.com/JBZoo/Event/issues"
+    "autoload-dev"      : {
+        "classmap" : [
+            "tests"
+        ]
     }
 }
