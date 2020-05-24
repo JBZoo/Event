@@ -26,7 +26,7 @@ use JBZoo\Utils\Sys;
  */
 class EventPerformanceTest extends PHPUnit
 {
-    const ITERATIONS = 100000;
+    const ITERATIONS = 1000000;
 
     protected function setUp(): void
     {
