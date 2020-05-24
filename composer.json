@@ -23,10 +23,10 @@
     },
 
     "require-dev"       : {
-        "jbzoo/phpunit"   : "dev-master",
-        "jbzoo/codestyle" : "dev-master",
-        "jbzoo/profiler"  : "^1.0.5",
-        "symfony/var-dumper" : "^5.0.8"
+        "jbzoo/phpunit"             : "dev-master",
+        "jbzoo/codestyle"           : "dev-master",
+        "jbzoo/profiler"            : "^1.0.5",
+        "roave/security-advisories" : "dev-master"
     },
 
     "autoload"          : {
