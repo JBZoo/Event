@@ -21,5 +21,3 @@ if ($autoload = realpath('./vendor/autoload.php')) {
     echo 'Please execute "composer update" !' . PHP_EOL;
     exit(1);
 }
-
-include './vendor/jbzoo/phpunit/src/functions/var-dumper.php';
