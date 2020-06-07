@@ -82,7 +82,7 @@ test-performance: ##@Project Run benchmarks and performance tests
         --output=jbzoo-html-env                \
         --precision=3                          \
         -vvv
-	$(call title,"Build reports - For readme")
+	$(call title,"Build reports - Markdown")
 	@php `pwd`/vendor/bin/phpbench run         \
         --tag=jbzoo_readme                     \
         --group=readme                         \

@@ -140,6 +140,22 @@ $eManager->trigger('item.save.after');
 ```
 
 
+### Benchmarks and performance
+
+See details about each test [here](tests/phpbench)
+
+benchmark | subject | mean | diff
+ --- | --- | --- | --- 
+OneCallback | benchOneUndefined | 0.66μs | 1.00x
+ManyCallbacksWithPriority | benchOneUndefined | 0.68μs | 1.03x
+OneCallback | benchOneWithStarEnd | 0.68μs | 1.03x
+ManyCallbacks | benchOneWithStarEnd | 0.69μs | 1.04x
+ManyCallbacksWithPriority | benchOneWithStarEnd | 0.74μs | 1.12x
+OneCallback | benchOneSimple | 1.20μs | 1.82x
+Random | benchOneSimple | 4.19μs | 6.35x
+ManyCallbacksWithPriority | benchOneSimple | 4.78μs | 7.25x
+
+
 ### License
 
 MIT

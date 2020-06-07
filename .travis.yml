@@ -33,7 +33,6 @@ before_script:
 script:
   - make update   --no-print-directory
   - make test-all --no-print-directory
-  - if [[ $XDEBUG_OFF = yes ]]; make test-performance --no-print-directory; fi;
 
 after_script:
   - make report-coveralls
