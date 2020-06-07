@@ -49,6 +49,7 @@
                 "benchmark",
                 "subject",
                 "mean",
+                "stdev",
                 "diff"
             ],
             "sort"      : {
