@@ -22,9 +22,9 @@ php:
 
 env:
   matrix:
-    - JBZOO_COMPOSER_UPDATE_FLAGS="--prefer-lowest --prefer-stable"
-    - JBZOO_COMPOSER_UPDATE_FLAGS=""
     - XDEBUG_OFF="yes"
+    - JBZOO_COMPOSER_UPDATE_FLAGS=""
+    - JBZOO_COMPOSER_UPDATE_FLAGS="--prefer-lowest --prefer-stable"
 
 before_script:
   - composer self-update
