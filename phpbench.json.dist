@@ -16,11 +16,15 @@
         "jbzoo-html-env"        : {
             "extends" : "html",
             "file"    : "build/phpbench-env.html"
+        },
+        "jbzoo-md"              : {
+            "extends" : "markdown",
+            "file"    : "build/phpbench.md"
         }
     },
 
     "reports"          : {
-        "jbzoo-table" : {
+        "jbzoo-table"    : {
             "generator" : "table",
             "cols"      : [
                 "benchmark",
@@ -39,7 +43,20 @@
                 "mean" : "asc"
             }
         },
-        "jbzoo-env"   : {
+        "jbzoo-markdown" : {
+            "generator" : "table",
+            "cols"      : [
+                "benchmark",
+                "subject",
+                "mean",
+                "stdev",
+                "diff"
+            ],
+            "sort"      : {
+                "mean" : "asc"
+            }
+        },
+        "jbzoo-env"      : {
             "generator" : "env"
         }
     }

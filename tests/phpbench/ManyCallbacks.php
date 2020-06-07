@@ -52,17 +52,20 @@ class ManyCallbacks
         $this->eManager->trigger('foo.bar');
     }
 
-    public function benchOneNestedStar1()
+    /**
+     * @Groups({"readme"})
+     */
+    public function benchOneWithStarEnd()
     {
         $this->eManager->trigger('foo.*');
     }
 
-    public function benchOneNestedStar2()
+    public function benchOneWithStarBegin()
     {
         $this->eManager->trigger('*.bar');
     }
 
-    public function benchOneNestedStarAll()
+    public function benchOneWithAllStars()
     {
         $this->eManager->trigger('*.*');
     }

@@ -39,6 +39,9 @@ class OneCallback
             });
     }
 
+    /**
+     * @Groups({"readme"})
+     */
     public function benchOneSimple()
     {
         $this->eManager->trigger('foo');
@@ -49,12 +52,15 @@ class OneCallback
         $this->eManager->trigger('foo.bar');
     }
 
-    public function benchOneNestedStar1()
+    /**
+     * @Groups({"readme"})
+     */
+    public function benchOneWithStarEnd()
     {
         $this->eManager->trigger('foo.*');
     }
 
-    public function benchOneNestedStar2()
+    public function benchOneWithStarBegin()
     {
         $this->eManager->trigger('*.bar');
     }
@@ -64,6 +70,9 @@ class OneCallback
         $this->eManager->trigger('*.*');
     }
 
+    /**
+     * @Groups({"readme"})
+     */
     public function benchOneUndefined()
     {
         $this->eManager->trigger('undefined');

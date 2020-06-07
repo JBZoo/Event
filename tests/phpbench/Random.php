@@ -35,7 +35,7 @@ class Random
         $this->eManager = new EventManager();
         $parts = ['foo', 'bar', 'woo', 'bazz', '*', '*', '*'];
 
-        for ($i = 0; $i < 100; $i++) {
+        for ($i = 0; $i < 10; $i++) {
             shuffle($parts);
             $partsRand = implode('.', array_slice($parts, 0, random_int(1, count($parts))));
 
@@ -45,12 +45,13 @@ class Random
 
             $this->eManager->on($partsRand, function () {
                 // noop
-            }, random_int(0, $i));
+            }, random_int(0,     $i));
         }
     }
 
     /**
      * @noinspection PhpUnhandledExceptionInspection
+     * @Groups({"readme"})
      */
     public function benchOneSimple()
     {

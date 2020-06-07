@@ -22,28 +22,27 @@ update: ##@Project Install/Update all 3rd party dependencies
 	@composer update $(JBZOO_COMPOSER_UPDATE_FLAGS)
 
 
-test-performance: ##@Project Run performance tests
+test-performance: ##@Project Run benchmarks and performance tests
 	$(call title,"Run benchmark tests")
 	@php `pwd`/vendor/bin/phpbench run         \
         --tag=jbzoo                            \
         --store                                \
-        --iterations=10                        \
         --warmup=2                             \
-        --sleep=2000                           \
         --stop-on-error                        \
         -vvv
 	$(call title,"Build reports - CLI")
 	@php `pwd`/vendor/bin/phpbench report      \
         --uuid=tag:jbzoo                       \
         --report=jbzoo-table                   \
-        --mode=time                            \
         --precision=2                          \
         -vvv
 	@php `pwd`/vendor/bin/phpbench report      \
         --uuid=tag:jbzoo                       \
         --report=jbzoo-table                   \
         --mode=throughput                      \
-        --precision=2                          \
+        --time-unit=seconds                    \
+        --mode=throughput                      \
+        --precision=0                          \
         -vvv
 	$(call title,"Build reports - HTML")
 	@php `pwd`/vendor/bin/phpbench report      \
@@ -51,14 +50,14 @@ test-performance: ##@Project Run performance tests
         --report=jbzoo-table                   \
         --output=jbzoo-html-time               \
         --mode=time                            \
-        --precision=3                          \
         -vvv
 	@php `pwd`/vendor/bin/phpbench report      \
         --uuid=tag:jbzoo                       \
         --report=jbzoo-table                   \
         --output=jbzoo-html-throughput         \
+        --time-unit=seconds                    \
         --mode=throughput                      \
-        --precision=3                          \
+        --precision=0                          \
         -vvv
 	@php `pwd`/vendor/bin/phpbench report      \
         --uuid=tag:jbzoo                       \
@@ -71,6 +70,23 @@ test-performance: ##@Project Run performance tests
         --output=jbzoo-html-env                \
         --precision=3                          \
         -vvv
+	$(call title,"Build reports - For readme")
+	@php `pwd`/vendor/bin/phpbench run         \
+        --tag=jbzoo_readme                     \
+        --group=readme                         \
+        --store                                \
+        --revs=100000                          \
+        --iterations=10                        \
+        --warmup=2                             \
+        --stop-on-error                        \
+        -vvv
+	@php `pwd`/vendor/bin/phpbench report      \
+        --uuid=tag:jbzoo_readme                \
+        --report=jbzoo-markdown                \
+        --output=jbzoo-md                      \
+        --precision=2                          \
+        -vvv
+	@cat `pwd`/build/phpbench.md
 
 
 test-all: ##@Project Run all project tests at once

@@ -31,17 +31,26 @@ class ManyCallbacksWithPriority
     {
         $this->eManager = new EventManager();
 
-        for ($i = 0; $i < 100; $i++) {
+        for ($i = 0; $i < 5; $i++) {
             $this->eManager
                 ->on('foo', function () {
                     // noop
-                }, 1000 - $i)
+                }, 5 - $i)
                 ->on('foo.bar', function () {
                     // noop
-                }, 1000 - $i);
+                }, 5 - $i)
+                ->on('foo', function () {
+                    // noop
+                }, 5 + $i)
+                ->on('foo.bar', function () {
+                    // noop
+                }, 5 + $i);
         }
     }
 
+    /**
+     * @Groups({"readme"})
+     */
     public function benchOneSimple()
     {
         $this->eManager->trigger('foo');
@@ -52,12 +61,15 @@ class ManyCallbacksWithPriority
         $this->eManager->trigger('foo.bar');
     }
 
-    public function benchOneNestedStar1()
+    /**
+     * @Groups({"readme"})
+     */
+    public function benchOneWithStarEnd()
     {
         $this->eManager->trigger('foo.*');
     }
 
-    public function benchOneNestedStar2()
+    public function benchOneWithStarBegin()
     {
         $this->eManager->trigger('*.bar');
     }
@@ -67,6 +79,9 @@ class ManyCallbacksWithPriority
         $this->eManager->trigger('*.*');
     }
 
+    /**
+     * @Groups({"readme"})
+     */
     public function benchOneUndefined()
     {
         $this->eManager->trigger('undefined');
