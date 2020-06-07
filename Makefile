@@ -11,6 +11,8 @@
 # @link       https://github.com/JBZoo/Event
 #
 
+XDEBUG_OFF ?= no
+
 ifneq (, $(wildcard ./vendor/jbzoo/codestyle/src/init.Makefile))
     include ./vendor/jbzoo/codestyle/src/init.Makefile
 endif
@@ -20,6 +22,16 @@ update: ##@Project Install/Update all 3rd party dependencies
 	$(call title,"Install/Update all 3rd party dependencies")
 	@echo "Composer flags: $(JBZOO_COMPOSER_UPDATE_FLAGS)"
 	@composer update $(JBZOO_COMPOSER_UPDATE_FLAGS)
+
+
+test-all: ##@Project Run all project tests at once
+	@make test
+	@make codestyle
+	@if [ $(XDEBUG_OFF) = "yes" ]; then  \
+       make test-performance;            \
+    else                                 \
+      echo "Performance test works only if XDEBUG_OFF=yes"; \
+    fi;
 
 
 test-performance: ##@Project Run benchmarks and performance tests
@@ -87,9 +99,3 @@ test-performance: ##@Project Run benchmarks and performance tests
         --precision=2                          \
         -vvv
 	@cat `pwd`/build/phpbench.md
-
-
-test-all: ##@Project Run all project tests at once
-	@make test
-	@make codestyle
-	@make test-performance
