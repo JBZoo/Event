@@ -50,6 +50,7 @@
                 "subject",
                 "mean",
                 "stdev",
+                "rstdev",
                 "diff"
             ],
             "sort"      : {

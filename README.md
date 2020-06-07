@@ -144,16 +144,16 @@ $eManager->trigger('item.save.after');
 
 See details about each test [here](tests/phpbench)
 
-benchmark | subject | mean | diff
- --- | --- | --- | --- 
-OneCallback | benchOneUndefined | 0.66μs | 1.00x
-ManyCallbacksWithPriority | benchOneUndefined | 0.68μs | 1.03x
-OneCallback | benchOneWithStarEnd | 0.68μs | 1.03x
-ManyCallbacks | benchOneWithStarEnd | 0.69μs | 1.04x
-ManyCallbacksWithPriority | benchOneWithStarEnd | 0.74μs | 1.12x
-OneCallback | benchOneSimple | 1.20μs | 1.82x
-Random | benchOneSimple | 4.19μs | 6.35x
-ManyCallbacksWithPriority | benchOneSimple | 4.78μs | 7.25x
+benchmark | subject | mean | stdev | rstdev | diff
+ --- | --- | --- | --- | --- | --- 
+ManyCallbacksWithPriority | benchOneUndefined | 0.65μs | 0.01μs | 1.17% | 1.00x
+OneCallback | benchOneUndefined | 0.65μs | 0.01μs | 0.84% | 1.00x
+ManyCallbacksWithPriority | benchOneWithStarEnd | 0.68μs | 0.01μs | 1.18% | 1.04x
+OneCallback | benchOneWithStarEnd | 0.68μs | 0.01μs | 1.02% | 1.04x
+ManyCallbacks | benchOneWithStarEnd | 0.69μs | 0.01μs | 1.64% | 1.05x
+OneCallback | benchOneSimple | 1.19μs | 0.02μs | 1.46% | 1.81x
+Random | benchOneSimple | 4.19μs | 0.21μs | 4.93% | 6.41x
+ManyCallbacksWithPriority | benchOneSimple | 4.55μs | 0.02μs | 0.51% | 6.96x
 
 
 ### License
