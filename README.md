@@ -8,10 +8,7 @@ The EventEmitter is a simple pattern that allows you to create an object that em
 
 ### Install
 ```sh
-# add to project
-composer require jbzoo/event --update-no-dev
-# via update
-composer update jbzoo/event --no-dev
+composer require jbzoo/event
 ```
 
 
@@ -35,9 +32,9 @@ $eManager->trigger('create');
 
 
 ### Set priority
-By supplying a priority, you are ensured that subscribers are handled in a specific order. The default priority is EventManager::MID.
+By supplying a priority, you are ensured that subscribers handle in a specific order. The default priority is EventManager::MID.
 Anything below that will be triggered earlier, anything higher later.
-If there's two subscribers with the same priority, they will execute in an undefined, but deterministic order.
+If there are two subscribers with the same priority, they will execute in an undefined, but deterministic order.
 ```php
 // Run it first
 $eManager->on('create', function () {
@@ -140,22 +137,54 @@ $eManager->trigger('item.save.after');
 ```
 
 
-### Benchmarks and performance
+## Summary benchmark info (execution time) PHP v7.4
+All benchmark tests are executing without xdebug and with a huge random array and 100.000 iterations.
 
-See details about each test [here](tests/phpbench)
+Benchmark tests based on the tool [phpbench/phpbench](https://github.com/phpbench/phpbench). See details [here](tests/phpbench).   
 
-benchmark | subject | mean | stdev | rstdev | diff
- --- | --- | --- | --- | --- | --- 
-ManyCallbacksWithPriority | benchOneUndefined | 0.65μs | 0.01μs | 1.17% | 1.00x
-OneCallback | benchOneUndefined | 0.65μs | 0.01μs | 0.84% | 1.00x
-ManyCallbacksWithPriority | benchOneWithStarEnd | 0.68μs | 0.01μs | 1.18% | 1.04x
-OneCallback | benchOneWithStarEnd | 0.68μs | 0.01μs | 1.02% | 1.04x
-ManyCallbacks | benchOneWithStarEnd | 0.69μs | 0.01μs | 1.64% | 1.05x
-OneCallback | benchOneSimple | 1.19μs | 0.02μs | 1.46% | 1.81x
-Random | benchOneSimple | 4.19μs | 0.21μs | 4.93% | 6.41x
-ManyCallbacksWithPriority | benchOneSimple | 4.55μs | 0.02μs | 0.51% | 6.96x
+Please, pay attention - `1μs = 1/1.000.000 of second!`
+
+**benchmark: ManyCallbacks**
+
+subject | groups | its | revs | mean | stdev | rstdev | mem_real | diff
+ --- | --- | --- | --- | --- | --- | --- | --- | --- 
+benchOneUndefined |  | 3 | 100000 | 0.65μs | 0.00μs | 0.54% | 6,291,456b | 1.00x
+benchOneWithStarBegin |  | 3 | 100000 | 0.67μs | 0.00μs | 0.34% | 6,291,456b | 1.04x
+benchOneWithAllStars |  | 3 | 100000 | 0.68μs | 0.01μs | 1.64% | 6,291,456b | 1.06x
+benchOneWithStarEnd | readme | 3 | 100000 | 0.69μs | 0.02μs | 3.57% | 6,291,456b | 1.06x
+benchOneNested |  | 3 | 100000 | 43.00μs | 0.08μs | 0.18% | 6,291,456b | 66.35x
+benchOneSimple |  | 3 | 100000 | 43.38μs | 0.61μs | 1.40% | 6,291,456b | 66.94x
+
+**benchmark: ManyCallbacksWithPriority**
+
+subject | groups | its | revs | mean | stdev | rstdev | mem_real | diff
+ --- | --- | --- | --- | --- | --- | --- | --- | --- 
+benchOneUndefined | readme | 3 | 100000 | 0.65μs | 0.01μs | 1.24% | 6,291,456b | 1.00x
+benchOneNestedStarAll |  | 3 | 100000 | 0.66μs | 0.00μs | 0.66% | 6,291,456b | 1.01x
+benchOneWithStarBegin |  | 3 | 100000 | 0.67μs | 0.01μs | 1.28% | 6,291,456b | 1.02x
+benchOneWithStarEnd | readme | 3 | 100000 | 0.67μs | 0.01μs | 1.04% | 6,291,456b | 1.03x
+benchOneSimple | readme | 3 | 100000 | 4.54μs | 0.02μs | 0.47% | 6,291,456b | 6.96x
+benchOneNested |  | 3 | 100000 | 4.60μs | 0.04μs | 0.89% | 6,291,456b | 7.05x
+
+**benchmark: OneCallback**
+
+subject | groups | its | revs | mean | stdev | rstdev | mem_real | diff
+ --- | --- | --- | --- | --- | --- | --- | --- | --- 
+benchOneUndefined | readme | 3 | 100000 | 0.65μs | 0.01μs | 0.87% | 6,291,456b | 1.00x
+benchOneNestedStarAll |  | 3 | 100000 | 0.66μs | 0.01μs | 0.92% | 6,291,456b | 1.02x
+benchOneWithStarEnd | readme | 3 | 100000 | 0.68μs | 0.01μs | 1.60% | 6,291,456b | 1.05x
+benchOneWithStarBegin |  | 3 | 100000 | 0.68μs | 0.01μs | 0.90% | 6,291,456b | 1.05x
+benchOneSimple | readme | 3 | 100000 | 1.17μs | 0.02μs | 1.30% | 6,291,456b | 1.80x
+benchOneNested |  | 3 | 100000 | 1.20μs | 0.01μs | 0.80% | 6,291,456b | 1.85x
 
 
-### License
+## Unit tests and check code style
+```sh
+make update
+make test-all
+```
+
+
+## License
 
 MIT

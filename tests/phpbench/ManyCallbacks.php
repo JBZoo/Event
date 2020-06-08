@@ -18,7 +18,8 @@ use JBZoo\Event\EventManager;
 /**
  * Class ManyCallbacks
  * @BeforeMethods({"init"})
- * @Revs(10000)
+ * @Revs(100000)
+ * @Iterations(3)
  */
 class ManyCallbacks
 {

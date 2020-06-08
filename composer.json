@@ -24,8 +24,7 @@
 
     "require-dev"       : {
         "jbzoo/utils"       : "^3.1.2",
-        "jbzoo/toolbox-dev" : "^1.0.1",
-        "phpbench/phpbench" : "^0.17.0"
+        "jbzoo/toolbox-dev" : "1.1.x-dev"
     },
 
     "autoload"          : {

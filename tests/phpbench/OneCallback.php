@@ -18,7 +18,8 @@ use JBZoo\Event\EventManager;
 /**
  * Class OneCallback
  * @BeforeMethods({"init"})
- * @Revs(10000)
+ * @Revs(100000)
+ * @Iterations(3)
  */
 class OneCallback
 {
