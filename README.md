@@ -148,34 +148,40 @@ Please, pay attention - `1μs = 1/1.000.000 of second!`
 
 subject | groups | its | revs | mean | stdev | rstdev | mem_real | diff
  --- | --- | --- | --- | --- | --- | --- | --- | --- 
-benchOneUndefined |  | 3 | 100000 | 0.65μs | 0.00μs | 0.54% | 6,291,456b | 1.00x
-benchOneWithStarBegin |  | 3 | 100000 | 0.67μs | 0.00μs | 0.34% | 6,291,456b | 1.04x
-benchOneWithAllStars |  | 3 | 100000 | 0.68μs | 0.01μs | 1.64% | 6,291,456b | 1.06x
-benchOneWithStarEnd | readme | 3 | 100000 | 0.69μs | 0.02μs | 3.57% | 6,291,456b | 1.06x
-benchOneNested |  | 3 | 100000 | 43.00μs | 0.08μs | 0.18% | 6,291,456b | 66.35x
-benchOneSimple |  | 3 | 100000 | 43.38μs | 0.61μs | 1.40% | 6,291,456b | 66.94x
+benchOneUndefined | undefined | 10 | 100000 | 0.65μs | 0.01μs | 1.00% | 6,291,456b | 1.00x
+benchOneWithStarBegin | *.bar | 10 | 100000 | 0.67μs | 0.01μs | 1.44% | 6,291,456b | 1.04x
+benchOneWithAllStars | *.* | 10 | 100000 | 0.68μs | 0.03μs | 4.18% | 6,291,456b | 1.04x
+benchOneWithStarEnd | foo.* | 10 | 100000 | 0.68μs | 0.01μs | 1.24% | 6,291,456b | 1.04x
+benchOneNested | foo.bar | 10 | 100000 | 43.23μs | 0.46μs | 1.07% | 6,291,456b | 66.56x
+benchOneSimple | foo | 10 | 100000 | 45.07μs | 2.63μs | 5.83% | 6,291,456b | 69.39x
 
 **benchmark: ManyCallbacksWithPriority**
 
 subject | groups | its | revs | mean | stdev | rstdev | mem_real | diff
  --- | --- | --- | --- | --- | --- | --- | --- | --- 
-benchOneUndefined | readme | 3 | 100000 | 0.65μs | 0.01μs | 1.24% | 6,291,456b | 1.00x
-benchOneNestedStarAll |  | 3 | 100000 | 0.66μs | 0.00μs | 0.66% | 6,291,456b | 1.01x
-benchOneWithStarBegin |  | 3 | 100000 | 0.67μs | 0.01μs | 1.28% | 6,291,456b | 1.02x
-benchOneWithStarEnd | readme | 3 | 100000 | 0.67μs | 0.01μs | 1.04% | 6,291,456b | 1.03x
-benchOneSimple | readme | 3 | 100000 | 4.54μs | 0.02μs | 0.47% | 6,291,456b | 6.96x
-benchOneNested |  | 3 | 100000 | 4.60μs | 0.04μs | 0.89% | 6,291,456b | 7.05x
+benchOneUndefined | undefined | 10 | 100000 | 0.65μs | 0.01μs | 1.35% | 6,291,456b | 1.00x
+benchOneNestedStarAll | *.* | 10 | 100000 | 0.67μs | 0.01μs | 1.34% | 6,291,456b | 1.03x
+benchOneWithStarBegin | *.bar | 10 | 100000 | 0.67μs | 0.01μs | 1.10% | 6,291,456b | 1.04x
+benchOneWithStarEnd | foo.* | 10 | 100000 | 0.68μs | 0.01μs | 1.13% | 6,291,456b | 1.05x
+benchOneSimple | foo | 10 | 100000 | 4.54μs | 0.02μs | 0.35% | 6,291,456b | 7.03x
+benchOneNested | foo.bar | 10 | 100000 | 4.58μs | 0.04μs | 0.81% | 6,291,456b | 7.10x
 
 **benchmark: OneCallback**
 
 subject | groups | its | revs | mean | stdev | rstdev | mem_real | diff
  --- | --- | --- | --- | --- | --- | --- | --- | --- 
-benchOneUndefined | readme | 3 | 100000 | 0.65μs | 0.01μs | 0.87% | 6,291,456b | 1.00x
-benchOneNestedStarAll |  | 3 | 100000 | 0.66μs | 0.01μs | 0.92% | 6,291,456b | 1.02x
-benchOneWithStarEnd | readme | 3 | 100000 | 0.68μs | 0.01μs | 1.60% | 6,291,456b | 1.05x
-benchOneWithStarBegin |  | 3 | 100000 | 0.68μs | 0.01μs | 0.90% | 6,291,456b | 1.05x
-benchOneSimple | readme | 3 | 100000 | 1.17μs | 0.02μs | 1.30% | 6,291,456b | 1.80x
-benchOneNested |  | 3 | 100000 | 1.20μs | 0.01μs | 0.80% | 6,291,456b | 1.85x
+benchOneWithStarBegin | *.bar | 10 | 100000 | 0.69μs | 0.03μs | 4.00% | 6,291,456b | 1.00x
+benchOneWithStarEnd | foo.* | 10 | 100000 | 0.70μs | 0.03μs | 4.22% | 6,291,456b | 1.00x
+benchOneNestedStarAll | *.* | 10 | 100000 | 0.70μs | 0.04μs | 6.02% | 6,291,456b | 1.01x
+benchOneUndefined | undefined | 10 | 100000 | 0.71μs | 0.05μs | 7.44% | 6,291,456b | 1.02x
+benchOneSimple | foo | 10 | 100000 | 1.18μs | 0.03μs | 2.27% | 6,291,456b | 1.70x
+benchOneNested | foo.bar | 10 | 100000 | 1.25μs | 0.03μs | 2.46% | 6,291,456b | 1.81x
+
+**benchmark: Random**
+
+subject | groups | its | revs | mean | stdev | rstdev | mem_real | diff
+ --- | --- | --- | --- | --- | --- | --- | --- | --- 
+benchOneSimple | random.*.triggers | 10 | 100000 | 4.29μs | 0.33μs | 7.69% | 6,291,456b | 1.00x
 
 
 ## Unit tests and check code style

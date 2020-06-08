@@ -19,7 +19,7 @@ use JBZoo\Event\EventManager;
  * Class Random
  * @BeforeMethods({"init"})
  * @Revs(100000)
- * @Iterations(3)
+ * @Iterations(10)
  */
 class Random
 {
@@ -51,8 +51,7 @@ class Random
     }
 
     /**
-     * @noinspection PhpUnhandledExceptionInspection
-     * @Groups({"readme"})
+     * @Groups({"random.*.triggers"})
      */
     public function benchOneSimple()
     {

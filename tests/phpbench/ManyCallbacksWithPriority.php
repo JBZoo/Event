@@ -19,7 +19,7 @@ use JBZoo\Event\EventManager;
  * Class ManyCallbacksWithPriority
  * @BeforeMethods({"init"})
  * @Revs(100000)
- * @Iterations(3)
+ * @Iterations(10)
  */
 class ManyCallbacksWithPriority
 {
@@ -50,38 +50,47 @@ class ManyCallbacksWithPriority
     }
 
     /**
-     * @Groups({"readme"})
+     * @Groups({"foo"})
      */
     public function benchOneSimple()
     {
         $this->eManager->trigger('foo');
     }
 
+    /**
+     * @Groups({"foo.bar"})
+     */
     public function benchOneNested()
     {
         $this->eManager->trigger('foo.bar');
     }
 
     /**
-     * @Groups({"readme"})
+     * @Groups({"foo.*"})
      */
     public function benchOneWithStarEnd()
     {
         $this->eManager->trigger('foo.*');
     }
 
+    /**
+     * @Groups({"*.bar"})
+     */
     public function benchOneWithStarBegin()
     {
         $this->eManager->trigger('*.bar');
     }
 
+    /**
+     * @Groups({"*.*"})
+     */
     public function benchOneNestedStarAll()
     {
         $this->eManager->trigger('*.*');
     }
 
     /**
-     * @Groups({"readme"})
+     * @Groups({"undefined"})
      */
     public function benchOneUndefined()
     {

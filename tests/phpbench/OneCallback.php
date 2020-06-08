@@ -19,7 +19,7 @@ use JBZoo\Event\EventManager;
  * Class OneCallback
  * @BeforeMethods({"init"})
  * @Revs(100000)
- * @Iterations(3)
+ * @Iterations(10)
  */
 class OneCallback
 {
@@ -41,38 +41,47 @@ class OneCallback
     }
 
     /**
-     * @Groups({"readme"})
+     * @Groups({"foo"})
      */
     public function benchOneSimple()
     {
         $this->eManager->trigger('foo');
     }
 
+    /**
+     * @Groups({"foo.bar"})
+     */
     public function benchOneNested()
     {
         $this->eManager->trigger('foo.bar');
     }
 
     /**
-     * @Groups({"readme"})
+     * @Groups({"foo.*"})
      */
     public function benchOneWithStarEnd()
     {
         $this->eManager->trigger('foo.*');
     }
 
+    /**
+     * @Groups({"*.bar"})
+     */
     public function benchOneWithStarBegin()
     {
         $this->eManager->trigger('*.bar');
     }
 
+    /**
+     * @Groups({"*.*"})
+     */
     public function benchOneNestedStarAll()
     {
         $this->eManager->trigger('*.*');
     }
 
     /**
-     * @Groups({"readme"})
+     * @Groups({"undefined"})
      */
     public function benchOneUndefined()
     {
