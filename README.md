@@ -150,7 +150,7 @@ subject | groups | its | revs | mean | stdev | rstdev | mem_real | diff
  --- | --- | --- | --- | --- | --- | --- | --- | --- 
 benchOneUndefined | undefined | 10 | 100000 | 0.65μs | 0.01μs | 1.00% | 6,291,456b | 1.00x
 benchOneWithStarBegin | *.bar | 10 | 100000 | 0.67μs | 0.01μs | 1.44% | 6,291,456b | 1.04x
-benchOneWithAllStars | *.* | 10 | 100000 | 0.68μs | 0.03μs | 4.18% | 6,291,456b | 1.04x
+benchOneWithAllStars | \*.\* | 10 | 100000 | 0.68μs | 0.03μs | 4.18% | 6,291,456b | 1.04x
 benchOneWithStarEnd | foo.* | 10 | 100000 | 0.68μs | 0.01μs | 1.24% | 6,291,456b | 1.04x
 benchOneNested | foo.bar | 10 | 100000 | 43.23μs | 0.46μs | 1.07% | 6,291,456b | 66.56x
 benchOneSimple | foo | 10 | 100000 | 45.07μs | 2.63μs | 5.83% | 6,291,456b | 69.39x
@@ -160,7 +160,7 @@ benchOneSimple | foo | 10 | 100000 | 45.07μs | 2.63μs | 5.83% | 6,291,456b | 6
 subject | groups | its | revs | mean | stdev | rstdev | mem_real | diff
  --- | --- | --- | --- | --- | --- | --- | --- | --- 
 benchOneUndefined | undefined | 10 | 100000 | 0.65μs | 0.01μs | 1.35% | 6,291,456b | 1.00x
-benchOneNestedStarAll | *.* | 10 | 100000 | 0.67μs | 0.01μs | 1.34% | 6,291,456b | 1.03x
+benchOneNestedStarAll | \*.\* | 10 | 100000 | 0.67μs | 0.01μs | 1.34% | 6,291,456b | 1.03x
 benchOneWithStarBegin | *.bar | 10 | 100000 | 0.67μs | 0.01μs | 1.10% | 6,291,456b | 1.04x
 benchOneWithStarEnd | foo.* | 10 | 100000 | 0.68μs | 0.01μs | 1.13% | 6,291,456b | 1.05x
 benchOneSimple | foo | 10 | 100000 | 4.54μs | 0.02μs | 0.35% | 6,291,456b | 7.03x
@@ -172,7 +172,7 @@ subject | groups | its | revs | mean | stdev | rstdev | mem_real | diff
  --- | --- | --- | --- | --- | --- | --- | --- | --- 
 benchOneWithStarBegin | *.bar | 10 | 100000 | 0.69μs | 0.03μs | 4.00% | 6,291,456b | 1.00x
 benchOneWithStarEnd | foo.* | 10 | 100000 | 0.70μs | 0.03μs | 4.22% | 6,291,456b | 1.00x
-benchOneNestedStarAll | *.* | 10 | 100000 | 0.70μs | 0.04μs | 6.02% | 6,291,456b | 1.01x
+benchOneNestedStarAll | \*.\* | 10 | 100000 | 0.70μs | 0.04μs | 6.02% | 6,291,456b | 1.01x
 benchOneUndefined | undefined | 10 | 100000 | 0.71μs | 0.05μs | 7.44% | 6,291,456b | 1.02x
 benchOneSimple | foo | 10 | 100000 | 1.18μs | 0.03μs | 2.27% | 6,291,456b | 1.70x
 benchOneNested | foo.bar | 10 | 100000 | 1.25μs | 0.03μs | 2.46% | 6,291,456b | 1.81x
