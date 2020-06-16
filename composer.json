@@ -8,7 +8,7 @@
     "authors"           : [
         {
             "name"  : "Denis Smetannikov",
-            "email" : "denis@jbzoo.com",
+            "email" : "admin@jbzoo.com",
             "role"  : "lead"
         },
         {
@@ -42,5 +42,11 @@
 
     "config"            : {
         "optimize-autoloader" : true
+    },
+
+    "extra"             : {
+        "branch-alias" : {
+            "dev-master" : "3.0.x-dev"
+        }
     }
 }

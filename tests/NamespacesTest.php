@@ -18,10 +18,10 @@ namespace JBZoo\PHPUnit;
 use JBZoo\Event\EventManager;
 
 /**
- * Class EventsNamespacesTest
+ * Class NamespacesTest
  * @package JBZoo\PHPUnit
  */
-class EventsNamespacesTest extends PHPUnit
+class NamespacesTest extends PHPUnit
 {
     /**
      * @var \Closure

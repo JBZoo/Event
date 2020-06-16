@@ -1,8 +1,8 @@
-# JBZoo Event  [![Build Status](https://travis-ci.org/JBZoo/Event.svg?branch=master)](https://travis-ci.org/JBZoo/Event)      [![Coverage Status](https://coveralls.io/repos/JBZoo/Event/badge.svg?branch=master&service=github)](https://coveralls.io/github/JBZoo/Event?branch=master)
+# JBZoo / Event
 
-#### PHP Library for event-based development
+[![Build Status](https://travis-ci.org/JBZoo/Event.svg?branch=master)](https://travis-ci.org/JBZoo/Event)    [![Coverage Status](https://coveralls.io/repos/JBZoo/Event/badge.svg)](https://coveralls.io/github/JBZoo/Event?branch=master)    [![Psalm Coverage](https://shepherd.dev/github/JBZoo/Event/coverage.svg)](https://shepherd.dev/github/JBZoo/Event)    
+[![Latest Stable Version](https://poser.pugx.org/JBZoo/Event/v)](https://packagist.org/packages/JBZoo/Event)    [![Latest Unstable Version](https://poser.pugx.org/JBZoo/Event/v/unstable)](https://packagist.org/packages/JBZoo/Event)    [![Dependents](https://poser.pugx.org/JBZoo/Event/dependents)](https://packagist.org/packages/JBZoo/Event/dependents?order_by=downloads)    [![GitHub Issues](https://img.shields.io/github/issues/JBZoo/Event)](https://github.com/JBZoo/Event/issues)    [![Total Downloads](https://poser.pugx.org/JBZoo/Event/downloads)](https://packagist.org/packages/JBZoo/Event/stats)    [![GitHub License](https://img.shields.io/github/license/JBZoo/Event)](https://github.com/JBZoo/Event/blob/master/LICENSE)
 
-[![License](https://poser.pugx.org/JBZoo/Event/license)](https://packagist.org/packages/JBZoo/Event) [![Latest Stable Version](https://poser.pugx.org/JBZoo/Event/v/stable)](https://packagist.org/packages/JBZoo/Event) [![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/JBZoo/Event/badges/quality-score.png?b=master)](https://scrutinizer-ci.com/g/JBZoo/Event/?branch=master)
 
 The EventEmitter is a simple pattern that allows you to create an object that emits events, and allow you to listen to those events.
 
