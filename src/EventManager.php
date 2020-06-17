@@ -51,7 +51,7 @@ class EventManager
      *
      * @SuppressWarnings(PHPMD.ShortMethodName)
      */
-    public function on($eventNames, $callback, int $priority = self::MID)
+    public function on($eventNames, $callback, int $priority = self::MID): self
     {
         $eventNames = (array)$eventNames;
 
@@ -77,7 +77,7 @@ class EventManager
      * @return $this
      * @throws Exception
      */
-    public function once($eventName, Closure $callback, int $priority = self::MID)
+    public function once($eventName, Closure $callback, int $priority = self::MID): self
     {
         $eventName = $this->cleanEventName($eventName);
 
@@ -113,9 +113,9 @@ class EventManager
      * Lastly, if there are 5 event handlers for an event. The continueCallback
      * will be called at most 4 times.
      *
-     * @param string  $eventName
-     * @param mixed[] $arguments
-     * @param Closure $continueCallback
+     * @param string       $eventName
+     * @param mixed[]      $arguments
+     * @param Closure|null $continueCallback
      * @return int|string
      * @throws Exception
      */
@@ -207,14 +207,24 @@ class EventManager
         }
 
         if (count($result) > 0) {
-            // Sorting by priority
-            usort($result, /** @psalm-suppress MissingClosureReturnType */ function (array $item1, array $item2) {
-                return $item2[0] - $item1[0];
-            });
+            /**
+             * @param array $item1
+             * @param array $item2
+             * @return int
+             */
+            $sortFunc = function (array $item1, array $item2): int {
+                return (int)$item2[0] - (int)$item1[0];
+            };
+            usort($result, $sortFunc); // Sorting by priority
 
-            return array_map(/** @psalm-suppress MissingClosureReturnType */ function (array $item) {
+            /**
+             * @param array $item
+             * @return Closure
+             */
+            $mapFunc = function (array $item): \Closure {
                 return $item[1];
-            }, $result);
+            };
+            return array_map($mapFunc, $result);
         }
 
         return [];
@@ -227,7 +237,7 @@ class EventManager
      * @param array $ePaths
      * @return bool
      */
-    protected function isContainPart($eNameParts, $ePaths)
+    protected function isContainPart(array $eNameParts, array $ePaths): bool
     {
         // Length of parts is equals
         if (count($eNameParts) !== count($ePaths)) {
@@ -287,7 +297,7 @@ class EventManager
      * @return void
      * @throws Exception
      */
-    public function removeListeners($eventName = null)
+    public function removeListeners($eventName = null): void
     {
         if (null !== $eventName) {
             $eventName = $this->cleanEventName($eventName);
@@ -307,10 +317,9 @@ class EventManager
      * @return string
      * @throws Exception
      */
-    public function cleanEventName($eventName)
+    public function cleanEventName($eventName): string
     {
         $eventName = strtolower($eventName);
-        /** @noinspection CallableParameterUseCaseInTypeContextInspection */
         $eventName = str_replace('..', '.', $eventName);
         $eventName = trim($eventName, '.');
         $eventName = trim($eventName);
@@ -341,7 +350,7 @@ class EventManager
     /**
      * @return array
      */
-    public function getSummeryInfo()
+    public function getSummeryInfo(): array
     {
         $result = [];
         foreach ($this->list as $eventName => $callbacks) {
