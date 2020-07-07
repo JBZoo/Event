@@ -394,16 +394,16 @@ class EventManagerTest extends PHPUnit
     {
         $eManager = new EventManager();
 
-        is('foo', $eManager->cleanEventName('FOO'));
-        is('foo', $eManager->cleanEventName('FOO.'));
-        is('foo', $eManager->cleanEventName('.FOO.'));
+        is('foo', EventManager::cleanEventName('FOO'));
+        is('foo', EventManager::cleanEventName('FOO.'));
+        is('foo', EventManager::cleanEventName('.FOO.'));
 
-        is('foo.bar', $eManager->cleanEventName('FOO.bar'));
+        is('foo.bar', EventManager::cleanEventName('FOO.bar'));
 
-        is('*', $eManager->cleanEventName('*'));
-        is('foo.*', $eManager->cleanEventName('FOO.*'));
-        is('foo.*', $eManager->cleanEventName('FOO.*.'));
-        is('foo.123', $eManager->cleanEventName('FOO.123'));
+        is('*', EventManager::cleanEventName('*'));
+        is('foo.*', EventManager::cleanEventName('FOO.*'));
+        is('foo.*', EventManager::cleanEventName('FOO.*.'));
+        is('foo.123', EventManager::cleanEventName('FOO.123'));
 
         // too slow to handle the next cases
         //is('foo', $eManager->cleanEventName(' . FOO . '));

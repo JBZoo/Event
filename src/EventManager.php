@@ -15,8 +15,6 @@
 
 namespace JBZoo\Event;
 
-use Closure;
-
 /**
  * Class Event
  * @package JBZoo\Event
@@ -44,19 +42,19 @@ class EventManager
      * Subscribe to an event.
      *
      * @param string|string[] $eventNames
-     * @param Closure         $callback
+     * @param callable        $callback
      * @param int             $priority
      * @return $this
      * @throws Exception
      *
      * @SuppressWarnings(PHPMD.ShortMethodName)
      */
-    public function on($eventNames, $callback, int $priority = self::MID): self
+    public function on($eventNames, callable $callback, int $priority = self::MID): self
     {
         $eventNames = (array)$eventNames;
 
         foreach ($eventNames as $oneEventName) {
-            $oneEventName = $this->cleanEventName($oneEventName);
+            $oneEventName = self::cleanEventName($oneEventName);
 
             if (!array_key_exists($oneEventName, $this->list)) {
                 $this->list[$oneEventName] = [];
@@ -71,15 +69,15 @@ class EventManager
     /**
      * Subscribe to an event only once.
      *
-     * @param string  $eventName
-     * @param Closure $callback
-     * @param int     $priority
+     * @param string   $eventName
+     * @param callable $callback
+     * @param int      $priority
      * @return $this
      * @throws Exception
      */
-    public function once($eventName, Closure $callback, int $priority = self::MID): self
+    public function once(string $eventName, callable $callback, int $priority = self::MID): self
     {
-        $eventName = $this->cleanEventName($eventName);
+        $eventName = self::cleanEventName($eventName);
 
         $wrapper = null;
 
@@ -113,37 +111,40 @@ class EventManager
      * Lastly, if there are 5 event handlers for an event. The continueCallback
      * will be called at most 4 times.
      *
-     * @param string       $eventName
-     * @param mixed[]      $arguments
-     * @param Closure|null $continueCallback
+     * @param string        $eventName
+     * @param mixed[]       $arguments
+     * @param callable|null $continueCallback
      * @return int|string
      * @throws Exception
      */
-    public function trigger($eventName, array $arguments = [], $continueCallback = null)
+    public function trigger(string $eventName, array $arguments = [], ?callable $continueCallback = null)
     {
         $listeners = $this->getList($eventName);
-        $arguments[] = $this->cleanEventName($eventName);
+        $arguments[] = self::cleanEventName($eventName);
 
-        return $this->callListenersWithCallback($listeners, $arguments, $continueCallback);
+        return self::callListenersWithCallback($listeners, $arguments, $continueCallback);
     }
 
     /**
      * Call list of listeners with continue callback function
      *
-     * @param Closure[]    $listeners
-     * @param mixed[]      $arguments
-     * @param Closure|null $continueCallback
+     * @param callable[]    $listeners
+     * @param mixed[]       $arguments
+     * @param callable|null $continueCallback
      * @return int|string
      */
-    protected function callListenersWithCallback(array $listeners, array $arguments = [], $continueCallback = null)
-    {
+    protected static function callListenersWithCallback(
+        array $listeners,
+        array $arguments = [],
+        callable $continueCallback = null
+    ) {
         $counter = count($listeners);
         $execCounter = 0;
 
         foreach ($listeners as $listener) {
             $counter--;
 
-            $result = $this->callOneListener($listener, $arguments);
+            $result = self::callOneListener($listener, $arguments);
             if (null !== $result) {
                 return $result;
             }
@@ -161,11 +162,11 @@ class EventManager
     /**
      * Call list of listeners
      *
-     * @param Closure $listener
-     * @param array   $arguments
+     * @param callable $listener
+     * @param array    $arguments
      * @return string|null
      */
-    protected function callOneListener($listener, array $arguments = []): ?string
+    protected static function callOneListener(callable $listener, array $arguments = []): ?string
     {
         try {
             call_user_func_array($listener, $arguments);
@@ -183,12 +184,12 @@ class EventManager
      * their priority.
      *
      * @param string $eventName
-     * @return Closure[]
+     * @return callable[]
      * @throws Exception
      */
-    public function getList($eventName): array
+    public function getList(string $eventName): array
     {
-        $eventName = $this->cleanEventName($eventName);
+        $eventName = self::cleanEventName($eventName);
 
         $result = [];
         $ePaths = explode('.', $eventName);
@@ -199,7 +200,7 @@ class EventManager
                 $result = array_merge($result, $eData);
             } elseif (strpos($eName, '*') !== false) {
                 $eNameParts = explode('.', $eName);
-                if ($this->isContainPart($eNameParts, $ePaths)) {
+                if (self::isContainPart($eNameParts, $ePaths)) {
                     /** @noinspection SlowArrayOperationsInLoopInspection */
                     $result = array_merge($result, $eData);
                 }
@@ -212,16 +213,16 @@ class EventManager
              * @param array $item2
              * @return int
              */
-            $sortFunc = function (array $item1, array $item2): int {
+            $sortFunc = static function (array $item1, array $item2): int {
                 return (int)$item2[0] - (int)$item1[0];
             };
             usort($result, $sortFunc); // Sorting by priority
 
             /**
              * @param array $item
-             * @return Closure
+             * @return callable
              */
-            $mapFunc = function (array $item): \Closure {
+            $mapFunc = static function (array $item): callable {
                 return $item[1];
             };
             return array_map($mapFunc, $result);
@@ -237,7 +238,7 @@ class EventManager
      * @param array $ePaths
      * @return bool
      */
-    protected function isContainPart(array $eNameParts, array $ePaths): bool
+    protected static function isContainPart(array $eNameParts, array $ePaths): bool
     {
         // Length of parts is equals
         if (count($eNameParts) !== count($ePaths)) {
@@ -262,15 +263,15 @@ class EventManager
      * If the listener could not be found, this method will return false. If it
      * was removed it will return true.
      *
-     * @param string       $eventName
-     * @param Closure|null $listener
+     * @param string        $eventName
+     * @param callable|null $listener
      * @return bool
      *
      * @throws Exception
      */
-    public function removeListener($eventName, $listener = null)
+    public function removeListener(string $eventName, ?callable $listener = null): bool
     {
-        $eventName = $this->cleanEventName($eventName);
+        $eventName = self::cleanEventName($eventName);
 
         if (!array_key_exists($eventName, $this->list)) {
             return false;
@@ -293,14 +294,14 @@ class EventManager
      * removed. If it is not specified, every listener for every event is
      * removed.
      *
-     * @param string $eventName
+     * @param string|null $eventName
      * @return void
      * @throws Exception
      */
-    public function removeListeners($eventName = null): void
+    public function removeListeners(?string $eventName = null): void
     {
         if (null !== $eventName) {
-            $eventName = $this->cleanEventName($eventName);
+            $eventName = self::cleanEventName($eventName);
         }
 
         if ($eventName) {
@@ -317,7 +318,7 @@ class EventManager
      * @return string
      * @throws Exception
      */
-    public function cleanEventName($eventName): string
+    public static function cleanEventName(string $eventName): string
     {
         $eventName = strtolower($eventName);
         $eventName = str_replace('..', '.', $eventName);
@@ -342,7 +343,7 @@ class EventManager
     /**
      * @return EventManager|null
      */
-    public static function getDefault()
+    public static function getDefault(): ?EventManager
     {
         return self::$defaultManager;
     }
