@@ -14,9 +14,6 @@ composer require jbzoo/event
 
 ### Simple example
 ```php
-require_once './vendor/autoload.php'; // composer autoload.php
-
-// Get needed classes
 use JBZoo\Event\EventManager;
 
 $eManager = new EventManager();
