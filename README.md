@@ -1,6 +1,6 @@
 # JBZoo / Event
 
-[![Build Status](https://travis-ci.org/JBZoo/Event.svg?branch=master)](https://travis-ci.org/JBZoo/Event)    [![Coverage Status](https://coveralls.io/repos/JBZoo/Event/badge.svg)](https://coveralls.io/github/JBZoo/Event?branch=master)    [![Psalm Coverage](https://shepherd.dev/github/JBZoo/Event/coverage.svg)](https://shepherd.dev/github/JBZoo/Event)    
+[![Build Status](https://travis-ci.org/JBZoo/Event.svg)](https://travis-ci.org/JBZoo/Event)    [![Coverage Status](https://coveralls.io/repos/JBZoo/Event/badge.svg)](https://coveralls.io/github/JBZoo/Event)    [![Psalm Coverage](https://shepherd.dev/github/JBZoo/Event/coverage.svg)](https://shepherd.dev/github/JBZoo/Event)    
 [![Stable Version](https://poser.pugx.org/jbzoo/event/version)](https://packagist.org/packages/jbzoo/event)    [![Latest Unstable Version](https://poser.pugx.org/jbzoo/event/v/unstable)](https://packagist.org/packages/jbzoo/event)    [![Dependents](https://poser.pugx.org/jbzoo/event/dependents)](https://packagist.org/packages/jbzoo/event/dependents?order_by=downloads)    [![GitHub Issues](https://img.shields.io/github/issues/jbzoo/event)](https://github.com/JBZoo/Event/issues)    [![Total Downloads](https://poser.pugx.org/jbzoo/event/downloads)](https://packagist.org/packages/jbzoo/event/stats)    [![GitHub License](https://img.shields.io/github/license/jbzoo/event)](https://github.com/JBZoo/Event/blob/master/LICENSE)
 
 
