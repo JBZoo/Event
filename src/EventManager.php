@@ -16,7 +16,7 @@
 namespace JBZoo\Event;
 
 /**
- * Class Event
+ * Class EventManager
  * @package JBZoo\Event
  */
 class EventManager
