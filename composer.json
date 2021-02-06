@@ -26,7 +26,7 @@
 
     "require-dev"       : {
         "jbzoo/utils"       : "^4.2.3",
-        "jbzoo/toolbox-dev" : "^2.6.1"
+        "jbzoo/toolbox-dev" : "^2.6.2"
     },
 
     "autoload"          : {
