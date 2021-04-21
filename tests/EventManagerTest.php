@@ -119,7 +119,7 @@ class EventManagerTest extends PHPUnit
         });
 
         $result = $eManager->trigger('foo', ['bar']);
-        is('Something wrong', $result);
+        is(0, $result);
         is(1, $argResult);
     }
 
@@ -141,7 +141,7 @@ class EventManagerTest extends PHPUnit
             throw new ExceptionStop('Something wrong #2');
         }, EventManager::MID);
 
-        is('Something wrong #2', $eManager->trigger('foo', ['bar']));
+        is(0, $eManager->trigger('foo', ['bar']));
         is(2, $argResult);
     }
 
@@ -307,7 +307,7 @@ class EventManagerTest extends PHPUnit
                 throw new ExceptionStop('Something wrong #2');
             }, EventManager::HIGHEST);
 
-        is('Something wrong #2', $eManager->trigger('foo', ['bar']));
+        is(0, $eManager->trigger('foo', ['bar']));
         is(2, $argResult);
     }
 

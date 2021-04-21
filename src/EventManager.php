@@ -116,10 +116,10 @@ class EventManager
      * @param string        $eventName
      * @param mixed[]       $arguments
      * @param callable|null $continueCallback
-     * @return int|string
+     * @return int
      * @throws Exception
      */
-    public function trigger(string $eventName, array $arguments = [], ?callable $continueCallback = null)
+    public function trigger(string $eventName, array $arguments = [], ?callable $continueCallback = null): int
     {
         $listeners = $this->getList($eventName);
         $arguments[] = self::cleanEventName($eventName);
@@ -133,13 +133,13 @@ class EventManager
      * @param callable[]    $listeners
      * @param mixed[]       $arguments
      * @param callable|null $continueCallback
-     * @return int|string
+     * @return int
      */
     protected static function callListenersWithCallback(
         array $listeners,
         array $arguments = [],
         callable $continueCallback = null
-    ) {
+    ): int {
         $counter = \count($listeners);
         $execCounter = 0;
 
@@ -147,8 +147,8 @@ class EventManager
             $counter--;
 
             $result = self::callOneListener($listener, $arguments);
-            if (null !== $result) {
-                return $result;
+            if (!$result) {
+                return $execCounter;
             }
 
             $execCounter++;
@@ -166,17 +166,18 @@ class EventManager
      *
      * @param callable $listener
      * @param array    $arguments
-     * @return string|null
+     * @return bool
+     * @phan-suppress PhanUnusedVariableCaughtException
      */
-    protected static function callOneListener(callable $listener, array $arguments = []): ?string
+    protected static function callOneListener(callable $listener, array $arguments = []): bool
     {
         try {
             \call_user_func_array($listener, $arguments);
         } catch (ExceptionStop $exception) {
-            return $exception->getMessage();
+            return false;
         }
 
-        return null;
+        return true;
     }
 
     /**
