@@ -13,6 +13,8 @@
  * @link       https://github.com/JBZoo/Event
  */
 
+declare(strict_types=1);
+
 namespace JBZoo\Event;
 
 /**
@@ -56,7 +58,7 @@ class EventManager
         foreach ($eventNames as $oneEventName) {
             $oneEventName = self::cleanEventName($oneEventName);
 
-            if (!array_key_exists($oneEventName, $this->list)) {
+            if (!\array_key_exists($oneEventName, $this->list)) {
                 $this->list[$oneEventName] = [];
             }
 
@@ -84,7 +86,7 @@ class EventManager
         /** @psalm-suppress MissingClosureReturnType */
         $wrapper = function () use ($eventName, $callback, &$wrapper) {
             $this->removeListener($eventName, $wrapper);
-            return call_user_func_array($callback, func_get_args());
+            return \call_user_func_array($callback, \func_get_args());
         };
 
         return $this->on($eventName, $wrapper, $priority);
@@ -114,10 +116,10 @@ class EventManager
      * @param string        $eventName
      * @param mixed[]       $arguments
      * @param callable|null $continueCallback
-     * @return int|string
+     * @return int
      * @throws Exception
      */
-    public function trigger(string $eventName, array $arguments = [], ?callable $continueCallback = null)
+    public function trigger(string $eventName, array $arguments = [], ?callable $continueCallback = null): int
     {
         $listeners = $this->getList($eventName);
         $arguments[] = self::cleanEventName($eventName);
@@ -131,22 +133,22 @@ class EventManager
      * @param callable[]    $listeners
      * @param mixed[]       $arguments
      * @param callable|null $continueCallback
-     * @return int|string
+     * @return int
      */
     protected static function callListenersWithCallback(
         array $listeners,
         array $arguments = [],
         callable $continueCallback = null
-    ) {
-        $counter = count($listeners);
+    ): int {
+        $counter = \count($listeners);
         $execCounter = 0;
 
         foreach ($listeners as $listener) {
             $counter--;
 
             $result = self::callOneListener($listener, $arguments);
-            if (null !== $result) {
-                return $result;
+            if (!$result) {
+                return $execCounter;
             }
 
             $execCounter++;
@@ -164,17 +166,18 @@ class EventManager
      *
      * @param callable $listener
      * @param array    $arguments
-     * @return string|null
+     * @return bool
+     * @phan-suppress PhanUnusedVariableCaughtException
      */
-    protected static function callOneListener(callable $listener, array $arguments = []): ?string
+    protected static function callOneListener(callable $listener, array $arguments = []): bool
     {
         try {
-            call_user_func_array($listener, $arguments);
+            \call_user_func_array($listener, $arguments);
         } catch (ExceptionStop $exception) {
-            return $exception->getMessage();
+            return false;
         }
 
-        return null;
+        return true;
     }
 
     /**
@@ -192,22 +195,22 @@ class EventManager
         $eventName = self::cleanEventName($eventName);
 
         $result = [];
-        $ePaths = explode('.', $eventName);
+        $ePaths = \explode('.', $eventName);
 
         foreach ($this->list as $eName => $eData) {
             if ($eName === $eventName) {
                 /** @noinspection SlowArrayOperationsInLoopInspection */
-                $result = array_merge($result, $eData);
-            } elseif (strpos($eName, '*') !== false) {
-                $eNameParts = explode('.', $eName);
+                $result = \array_merge($result, $eData);
+            } elseif (\strpos($eName, '*') !== false) {
+                $eNameParts = \explode('.', $eName);
                 if (self::isContainPart($eNameParts, $ePaths)) {
                     /** @noinspection SlowArrayOperationsInLoopInspection */
-                    $result = array_merge($result, $eData);
+                    $result = \array_merge($result, $eData);
                 }
             }
         }
 
-        if (count($result) > 0) {
+        if (\count($result) > 0) {
             /**
              * @param array $item1
              * @param array $item2
@@ -216,7 +219,7 @@ class EventManager
             $sortFunc = static function (array $item1, array $item2): int {
                 return (int)$item2[0] - (int)$item1[0];
             };
-            usort($result, $sortFunc); // Sorting by priority
+            \usort($result, $sortFunc); // Sorting by priority
 
             /**
              * @param array $item
@@ -225,7 +228,7 @@ class EventManager
             $mapFunc = static function (array $item): callable {
                 return $item[1];
             };
-            return array_map($mapFunc, $result);
+            return \array_map($mapFunc, $result);
         }
 
         return [];
@@ -241,14 +244,14 @@ class EventManager
     protected static function isContainPart(array $eNameParts, array $ePaths): bool
     {
         // Length of parts is equals
-        if (count($eNameParts) !== count($ePaths)) {
+        if (\count($eNameParts) !== \count($ePaths)) {
             return false;
         }
 
         $isFound = true;
 
         foreach ($eNameParts as $pos => $eNamePart) {
-            if ('*' !== $eNamePart && array_key_exists($pos, $ePaths) && $ePaths[$pos] !== $eNamePart) {
+            if ('*' !== $eNamePart && \array_key_exists($pos, $ePaths) && $ePaths[$pos] !== $eNamePart) {
                 $isFound = false;
                 break;
             }
@@ -273,7 +276,7 @@ class EventManager
     {
         $eventName = self::cleanEventName($eventName);
 
-        if (!array_key_exists($eventName, $this->list)) {
+        if (!\array_key_exists($eventName, $this->list)) {
             return false;
         }
 
@@ -320,10 +323,10 @@ class EventManager
      */
     public static function cleanEventName(string $eventName): string
     {
-        $eventName = strtolower($eventName);
-        $eventName = str_replace('..', '.', $eventName);
-        $eventName = trim($eventName, '.');
-        $eventName = trim($eventName);
+        $eventName = \strtolower($eventName);
+        $eventName = \str_replace('..', '.', $eventName);
+        $eventName = \trim($eventName, '.');
+        $eventName = \trim($eventName);
 
         if (!$eventName) {
             throw new Exception('Event name is empty!');
@@ -355,10 +358,10 @@ class EventManager
     {
         $result = [];
         foreach ($this->list as $eventName => $callbacks) {
-            $result[$eventName] = count($callbacks);
+            $result[$eventName] = \count($callbacks);
         }
 
-        ksort($result);
+        \ksort($result);
 
         return $result;
     }

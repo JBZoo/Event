@@ -13,6 +13,8 @@
  * @link       https://github.com/JBZoo/Event
  */
 
+declare(strict_types=1);
+
 namespace JBZoo\PHPUnit;
 
 /**
@@ -23,4 +25,11 @@ namespace JBZoo\PHPUnit;
 class EventReadmeTest extends AbstractReadmeTest
 {
     protected $packageName = 'Event';
+
+    protected function setUp(): void
+    {
+        parent::setUp();
+
+        $this->params['strict_types'] = true;
+    }
 }

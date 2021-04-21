@@ -13,6 +13,8 @@
  * @link       https://github.com/JBZoo/Event
  */
 
+declare(strict_types=1);
+
 namespace JBZoo\PHPUnit;
 
 use JBZoo\Event\EventManager;
@@ -42,7 +44,7 @@ class EventManagerTest extends PHPUnit
     public function testInit()
     {
         $eManager = new EventManager();
-        $this->assertInstanceOf(EventManager::class, $eManager);
+        self::assertInstanceOf(EventManager::class, $eManager);
     }
 
     public function testDefault()
@@ -117,7 +119,7 @@ class EventManagerTest extends PHPUnit
         });
 
         $result = $eManager->trigger('foo', ['bar']);
-        is('Something wrong', $result);
+        is(0, $result);
         is(1, $argResult);
     }
 
@@ -139,7 +141,7 @@ class EventManagerTest extends PHPUnit
             throw new ExceptionStop('Something wrong #2');
         }, EventManager::MID);
 
-        is('Something wrong #2', $eManager->trigger('foo', ['bar']));
+        is(0, $eManager->trigger('foo', ['bar']));
         is(2, $argResult);
     }
 
@@ -305,7 +307,7 @@ class EventManagerTest extends PHPUnit
                 throw new ExceptionStop('Something wrong #2');
             }, EventManager::HIGHEST);
 
-        is('Something wrong #2', $eManager->trigger('foo', ['bar']));
+        is(0, $eManager->trigger('foo', ['bar']));
         is(2, $argResult);
     }
 
@@ -392,8 +394,6 @@ class EventManagerTest extends PHPUnit
 
     public function testEventNameCleaner()
     {
-        $eManager = new EventManager();
-
         is('foo', EventManager::cleanEventName('FOO'));
         is('foo', EventManager::cleanEventName('FOO.'));
         is('foo', EventManager::cleanEventName('.FOO.'));
