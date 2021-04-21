@@ -13,6 +13,8 @@
  * @link       https://github.com/JBZoo/Event
  */
 
+declare(strict_types=1);
+
 namespace JBZoo\PHPUnit;
 
 use JBZoo\Event\EventManager;

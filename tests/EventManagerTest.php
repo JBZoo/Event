@@ -13,6 +13,8 @@
  * @link       https://github.com/JBZoo/Event
  */
 
+declare(strict_types=1);
+
 namespace JBZoo\PHPUnit;
 
 use JBZoo\Event\EventManager;
@@ -42,7 +44,7 @@ class EventManagerTest extends PHPUnit
     public function testInit()
     {
         $eManager = new EventManager();
-        $this->assertInstanceOf(EventManager::class, $eManager);
+        self::assertInstanceOf(EventManager::class, $eManager);
     }
 
     public function testDefault()
@@ -392,8 +394,6 @@ class EventManagerTest extends PHPUnit
 
     public function testEventNameCleaner()
     {
-        $eManager = new EventManager();
-
         is('foo', EventManager::cleanEventName('FOO'));
         is('foo', EventManager::cleanEventName('FOO.'));
         is('foo', EventManager::cleanEventName('.FOO.'));

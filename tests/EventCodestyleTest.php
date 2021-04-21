@@ -13,13 +13,14 @@
  * @link       https://github.com/JBZoo/Event
  */
 
+declare(strict_types=1);
+
 namespace JBZoo\PHPUnit;
 
 /**
- * Class CodestyleCodestyleTest
+ * Class EventCodestyleTest
  * @package JBZoo\PHPUnit
  */
-class EventCodestyleTest extends AbstractCopyrightTest
+class EventCodestyleTest extends AbstractCodestyleTest
 {
-    protected $packageName = "Event";
 }
