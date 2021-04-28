@@ -1,13 +1,13 @@
 {
-    "name"              : "jbzoo/event",
-    "type"              : "library",
-    "description"       : "Library for event-based development",
-    "license"           : "MIT",
-    "keywords"          : [
+    "name"         : "jbzoo/event",
+    "type"         : "library",
+    "description"  : "Library for event-based development",
+    "license"      : "MIT",
+    "keywords"     : [
         "JBZoo", "events", "event-manager", "eventmanager", "listener", "hook", "signal", "observer", "emit", "emitter"
     ],
 
-    "authors"           : [
+    "authors"      : [
         {
             "name"  : "Denis Smetannikov",
             "email" : "admin@jbzoo.com",
@@ -20,33 +20,30 @@
         }
     ],
 
-    "require"           : {
+    "require"      : {
         "php" : ">=7.2"
     },
 
-    "require-dev"       : {
+    "require-dev"  : {
         "jbzoo/utils"       : "^4.3.3",
-        "jbzoo/toolbox-dev" : "^2.10.0"
+        "jbzoo/toolbox-dev" : "^2.13.1"
     },
 
-    "autoload"          : {
+    "autoload"     : {
         "psr-4" : {
             "JBZoo\\Event\\" : "src"
         }
     },
 
-    "minimum-stability" : "dev",
-    "prefer-stable"     : true,
-
-    "autoload-dev"      : {
+    "autoload-dev" : {
         "classmap" : ["tests"]
     },
 
-    "config"            : {
+    "config"       : {
         "optimize-autoloader" : true
     },
 
-    "extra"             : {
+    "extra"        : {
         "branch-alias" : {
             "dev-master" : "3.x-dev"
         }

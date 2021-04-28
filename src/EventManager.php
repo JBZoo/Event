@@ -21,7 +21,7 @@ namespace JBZoo\Event;
  * Class EventManager
  * @package JBZoo\Event
  */
-class EventManager
+final class EventManager
 {
     public const LOWEST  = 0;
     public const LOW     = 50;

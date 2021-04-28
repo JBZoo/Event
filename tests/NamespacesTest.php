@@ -59,9 +59,9 @@ class NamespacesTest extends PHPUnit
         is(1, $eManager->trigger('item.save.before'));
         is(1, $eManager->trigger('item.save.after'));
 
-        is(0, $eManager->trigger('undefind'));
+        is(0, $eManager->trigger('undefined'));
         is(0, $eManager->trigger('save.after'));
-        is(0, $eManager->trigger('item.save.undefind'));
+        is(0, $eManager->trigger('item.save.undefined'));
         is(0, $eManager->trigger('item.saved'));
     }
 
@@ -75,7 +75,7 @@ class NamespacesTest extends PHPUnit
 
         is(0, $eManager->trigger('item.save.before'));
         is(0, $eManager->trigger('item.save.after'));
-        is(0, $eManager->trigger('item.save.after.realy.deep'));
+        is(0, $eManager->trigger('item.save.after.really.deep'));
     }
 
     public function testAnyPart2()
@@ -89,7 +89,7 @@ class NamespacesTest extends PHPUnit
 
         is(0, $eManager->trigger('item.save'));
         is(0, $eManager->trigger('item.save.before'));
-        is(0, $eManager->trigger('item.save.after.realy.deep'));
+        is(0, $eManager->trigger('item.save.after.really.deep'));
     }
 
     public function testAnyPart3()
@@ -102,7 +102,7 @@ class NamespacesTest extends PHPUnit
 
         is(0, $eManager->trigger('item.save'));
         is(0, $eManager->trigger('item.save.before'));
-        is(0, $eManager->trigger('item.save.after.realy.deep'));
+        is(0, $eManager->trigger('item.save.after.really.deep'));
     }
 
     public function testAnyPart4()
@@ -115,7 +115,7 @@ class NamespacesTest extends PHPUnit
         is(1, $eManager->trigger('item.save.after'));
 
         is(0, $eManager->trigger('item.save'));
-        is(0, $eManager->trigger('item.save.after.realy.deep'));
+        is(0, $eManager->trigger('item.save.after.really.deep'));
     }
 
     public function testAnyPart5()
@@ -130,8 +130,8 @@ class NamespacesTest extends PHPUnit
 
         is(0, $eManager->trigger('item.save'));
         is(0, $eManager->trigger('item.save.before'));
-        is(0, $eManager->trigger('item.save.after.realy.deep.name'));
-        is(0, $eManager->trigger('item.load.after.realy.deep.name'));
+        is(0, $eManager->trigger('item.save.after.really.deep.name'));
+        is(0, $eManager->trigger('item.load.after.really.deep.name'));
     }
 
     public function testComplex()
@@ -180,8 +180,8 @@ class NamespacesTest extends PHPUnit
         is(0, $eManager->trigger('item.load'));
         is(0, $eManager->trigger('item.load.before'));
         is(0, $eManager->trigger('save.before'));
-        is(0, $eManager->trigger('item.save.before.realy.deep.name'));
-        is(0, $eManager->trigger('category.save.before.realy.deep.name'));
+        is(0, $eManager->trigger('item.save.before.really.deep.name'));
+        is(0, $eManager->trigger('category.save.before.really.deep.name'));
 
         is(1, $eManager->trigger('item.save'));
         is(1, $eManager->trigger('category'));
