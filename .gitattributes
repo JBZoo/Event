@@ -21,5 +21,6 @@
 /.travis.yml         export-ignore
 /phpbench.json.dist  export-ignore
 /phpunit.xml.dist    export-ignore
+/Makefile            export-ignore
 
 * text eol=lf
