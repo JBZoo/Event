@@ -28,11 +28,9 @@ env:
   matrix:
     - JBZOO_COMPOSER_UPDATE_FLAGS="--prefer-lowest --prefer-stable"
     - JBZOO_COMPOSER_UPDATE_FLAGS=""
-    - XDEBUG_OFF="yes"
 
 before_script:
   - composer self-update
-  - if [[ $XDEBUG_OFF = yes ]]; then phpenv config-rm xdebug.ini; fi;
 
 script:
   - make update   --no-print-directory
