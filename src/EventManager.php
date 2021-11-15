@@ -198,6 +198,7 @@ final class EventManager
         $ePaths = \explode('.', $eventName);
 
         foreach ($this->list as $eName => $eData) {
+            $eName = (string)$eName;
             if ($eName === $eventName) {
                 /** @noinspection SlowArrayOperationsInLoopInspection */
                 $result = \array_merge($result, $eData);
