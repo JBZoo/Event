@@ -17,12 +17,8 @@ declare(strict_types=1);
 
 $default = include __DIR__ . '/vendor/jbzoo/codestyle/src/phan/default.php';
 
-$config = array_merge($default, [
+return array_merge($default, [
     'directory_list' => [
         'src',
     ]
 ]);
-
-$config['plugins'][] = 'NotFullyQualifiedUsagePlugin';
-
-return $config;

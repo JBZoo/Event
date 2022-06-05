@@ -24,7 +24,7 @@ namespace JBZoo\PHPUnit;
  */
 class EventReadmeTest extends AbstractReadmeTest
 {
-    protected $packageName = 'Event';
+    protected string $packageName = 'Event';
 
     protected function setUp(): void
     {

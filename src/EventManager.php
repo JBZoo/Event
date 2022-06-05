@@ -32,13 +32,13 @@ final class EventManager
     /**
      * @var EventManager|null
      */
-    protected static $defaultManager;
+    protected static ?EventManager $defaultManager;
 
     /**
      * The list of listeners
      * @var array
      */
-    protected $list = [];
+    protected array $list = [];
 
     /**
      * Subscribe to an event.
@@ -114,7 +114,7 @@ final class EventManager
      * will be called at most 4 times.
      *
      * @param string        $eventName
-     * @param mixed[]       $arguments
+     * @param array         $arguments
      * @param callable|null $continueCallback
      * @return int
      * @throws Exception
@@ -131,7 +131,7 @@ final class EventManager
      * Call list of listeners with continue callback function
      *
      * @param callable[]    $listeners
-     * @param mixed[]       $arguments
+     * @param array         $arguments
      * @param callable|null $continueCallback
      * @return int
      */

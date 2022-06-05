@@ -16,17 +16,17 @@
         {
             "name"     : "Evert Pot",
             "email"    : "me@evertpot.com",
-            "homepage" : "http://sabre.io/event/"
+            "homepage" : "https://sabre.io/event/"
         }
     ],
 
     "require"      : {
-        "php" : ">=7.2"
+        "php" : ">=7.4"
     },
 
     "require-dev"  : {
-        "jbzoo/utils"       : "^4.3.3",
-        "jbzoo/toolbox-dev" : "^3.1.0"
+        "jbzoo/utils"       : ">=4.5.5",
+        "jbzoo/toolbox-dev" : "^4.0.1"
     },
 
     "autoload"     : {
