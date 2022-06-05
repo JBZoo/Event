@@ -31,7 +31,7 @@ class EventManagerTest extends PHPUnit
     /**
      * @var \Closure
      */
-    protected $noop;
+    protected \Closure $noop;
 
     protected function setUp(): void
     {
@@ -97,7 +97,7 @@ class EventManagerTest extends PHPUnit
             $argResult = $arg;
         });
 
-        isTrue($eManager->trigger('foo', ['bar']));
+        isTrue($eManager->trigger('foo', ['bar']) > 0);
         is('bar', $argResult);
     }
 
