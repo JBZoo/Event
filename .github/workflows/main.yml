@@ -31,9 +31,12 @@ jobs:
   phpunit:
     name: PHPUnit
     runs-on: ubuntu-latest
+    env:
+      JBZOO_COMPOSER_UPDATE_FLAGS: ${{ matrix.composer_flags }}
     strategy:
       matrix:
         php-version: [ 7.4, 8.0, 8.1 ]
+        composer_flags: [ "--prefer-lowest", "" ]
     steps:
       - name: Checkout code
         uses: actions/checkout@v2
