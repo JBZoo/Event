@@ -32,7 +32,7 @@ final class EventManager
     /**
      * @var EventManager|null
      */
-    protected static ?EventManager $defaultManager;
+    protected static ?EventManager $defaultManager = null;
 
     /**
      * The list of listeners
