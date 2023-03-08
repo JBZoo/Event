@@ -4,7 +4,16 @@
     "description"  : "Library for event-based development",
     "license"      : "MIT",
     "keywords"     : [
-        "JBZoo", "events", "event-manager", "eventmanager", "listener", "hook", "signal", "observer", "emit", "emitter"
+        "JBZoo",
+        "events",
+        "event-manager",
+        "eventmanager",
+        "listener",
+        "hook",
+        "signal",
+        "observer",
+        "emit",
+        "emitter"
     ],
 
     "authors"      : [
@@ -21,12 +30,11 @@
     ],
 
     "require"      : {
-        "php" : ">=7.4"
+        "php" : "^8.1"
     },
 
     "require-dev"  : {
-        "jbzoo/utils"       : ">=4.5.5",
-        "jbzoo/toolbox-dev" : "^4.0.1"
+        "jbzoo/toolbox-dev" : "7.x-dev"
     },
 
     "autoload"     : {
@@ -36,7 +44,9 @@
     },
 
     "autoload-dev" : {
-        "classmap" : ["tests"]
+        "classmap" : [
+            "tests"
+        ]
     },
 
     "config"       : {
@@ -45,7 +55,7 @@
 
     "extra"        : {
         "branch-alias" : {
-            "dev-master" : "3.x-dev"
+            "dev-master" : "7.x-dev"
         }
     }
 }
