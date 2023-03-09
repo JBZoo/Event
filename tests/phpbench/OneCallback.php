@@ -1,16 +1,15 @@
 <?php
 
 /**
- * JBZoo Toolbox - Event
+ * JBZoo Toolbox - Event.
  *
  * This file is part of the JBZoo Toolbox project.
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  *
- * @package    Event
  * @license    MIT
  * @copyright  Copyright (C) JBZoo.com, All rights reserved.
- * @link       https://github.com/JBZoo/Event
+ * @see        https://github.com/JBZoo/Event
  */
 
 declare(strict_types=1);
@@ -18,26 +17,23 @@ declare(strict_types=1);
 use JBZoo\Event\EventManager;
 
 /**
- * Class OneCallback
  * @BeforeMethods({"init"})
  * @Revs(100000)
  * @Iterations(10)
  */
 class OneCallback
 {
-    /**
-     * @var EventManager
-     */
+    /** @var EventManager */
     private $eManager;
 
-    public function init()
+    public function init(): void
     {
         $this->eManager = new EventManager();
         $this->eManager
-            ->on('foo', function () {
+            ->on('foo', static function (): void {
                 // noop
             })
-            ->on('foo.bar', function () {
+            ->on('foo.bar', static function (): void {
                 // noop
             });
     }
@@ -45,7 +41,7 @@ class OneCallback
     /**
      * @Groups({"foo"})
      */
-    public function benchOneSimple()
+    public function benchOneSimple(): void
     {
         $this->eManager->trigger('foo');
     }
@@ -53,7 +49,7 @@ class OneCallback
     /**
      * @Groups({"foo.bar"})
      */
-    public function benchOneNested()
+    public function benchOneNested(): void
     {
         $this->eManager->trigger('foo.bar');
     }
@@ -61,7 +57,7 @@ class OneCallback
     /**
      * @Groups({"foo.*"})
      */
-    public function benchOneWithStarEnd()
+    public function benchOneWithStarEnd(): void
     {
         $this->eManager->trigger('foo.*');
     }
@@ -69,7 +65,7 @@ class OneCallback
     /**
      * @Groups({"*.bar"})
      */
-    public function benchOneWithStarBegin()
+    public function benchOneWithStarBegin(): void
     {
         $this->eManager->trigger('*.bar');
     }
@@ -77,7 +73,7 @@ class OneCallback
     /**
      * @Groups({"*.*"})
      */
-    public function benchOneNestedStarAll()
+    public function benchOneNestedStarAll(): void
     {
         $this->eManager->trigger('*.*');
     }
@@ -85,7 +81,7 @@ class OneCallback
     /**
      * @Groups({"undefined"})
      */
-    public function benchOneUndefined()
+    public function benchOneUndefined(): void
     {
         $this->eManager->trigger('undefined');
     }
