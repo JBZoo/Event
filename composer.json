@@ -42,9 +42,7 @@
     },
 
     "autoload"          : {
-        "psr-4" : {
-            "JBZoo\\Event\\" : "src"
-        }
+        "psr-4" : {"JBZoo\\Event\\" : "src"}
     },
 
     "autoload-dev" : {
