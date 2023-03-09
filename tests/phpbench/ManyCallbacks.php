@@ -1,16 +1,15 @@
 <?php
 
 /**
- * JBZoo Toolbox - Event
+ * JBZoo Toolbox - Event.
  *
  * This file is part of the JBZoo Toolbox project.
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  *
- * @package    Event
  * @license    MIT
  * @copyright  Copyright (C) JBZoo.com, All rights reserved.
- * @link       https://github.com/JBZoo/Event
+ * @see        https://github.com/JBZoo/Event
  */
 
 declare(strict_types=1);
@@ -18,28 +17,25 @@ declare(strict_types=1);
 use JBZoo\Event\EventManager;
 
 /**
- * Class ManyCallbacks
  * @BeforeMethods({"init"})
  * @Revs(100000)
  * @Iterations(10)
  */
 class ManyCallbacks
 {
-    /**
-     * @var EventManager
-     */
+    /** @var EventManager */
     private $eManager;
 
-    public function init()
+    public function init(): void
     {
         $this->eManager = new EventManager();
 
         for ($i = 0; $i < 100; $i++) {
             $this->eManager
-                ->on('foo', function () {
+                ->on('foo', static function (): void {
                     // noop
                 })
-                ->on('foo.bar', function () {
+                ->on('foo.bar', static function (): void {
                     // noop
                 });
         }
@@ -48,7 +44,7 @@ class ManyCallbacks
     /**
      * @Groups({"foo"})
      */
-    public function benchOneSimple()
+    public function benchOneSimple(): void
     {
         $this->eManager->trigger('foo');
     }
@@ -56,7 +52,7 @@ class ManyCallbacks
     /**
      * @Groups({"foo.bar"})
      */
-    public function benchOneNested()
+    public function benchOneNested(): void
     {
         $this->eManager->trigger('foo.bar');
     }
@@ -64,7 +60,7 @@ class ManyCallbacks
     /**
      * @Groups({"foo.*"})
      */
-    public function benchOneWithStarEnd()
+    public function benchOneWithStarEnd(): void
     {
         $this->eManager->trigger('foo.*');
     }
@@ -72,7 +68,7 @@ class ManyCallbacks
     /**
      * @Groups({"*.bar"})
      */
-    public function benchOneWithStarBegin()
+    public function benchOneWithStarBegin(): void
     {
         $this->eManager->trigger('*.bar');
     }
@@ -80,7 +76,7 @@ class ManyCallbacks
     /**
      * @Groups({"*.*"})
      */
-    public function benchOneWithAllStars()
+    public function benchOneWithAllStars(): void
     {
         $this->eManager->trigger('*.*');
     }
@@ -88,7 +84,7 @@ class ManyCallbacks
     /**
      * @Groups({"undefined"})
      */
-    public function benchOneUndefined()
+    public function benchOneUndefined(): void
     {
         $this->eManager->trigger('undefined');
     }

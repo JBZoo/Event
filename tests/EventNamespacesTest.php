@@ -1,16 +1,15 @@
 <?php
 
 /**
- * JBZoo Toolbox - Event
+ * JBZoo Toolbox - Event.
  *
  * This file is part of the JBZoo Toolbox project.
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  *
- * @package    Event
  * @license    MIT
  * @copyright  Copyright (C) JBZoo.com, All rights reserved.
- * @link       https://github.com/JBZoo/Event
+ * @see        https://github.com/JBZoo/Event
  */
 
 declare(strict_types=1);
@@ -19,24 +18,18 @@ namespace JBZoo\PHPUnit;
 
 use JBZoo\Event\EventManager;
 
-/**
- * Class NamespacesTest
- * @package JBZoo\PHPUnit
- */
-class NamespacesTest extends PHPUnit
+class EventNamespacesTest extends PHPUnit
 {
-    /**
-     * @var \Closure
-     */
+    /** @var \Closure */
     protected $noop;
 
     protected function setUp(): void
     {
-        $this->noop = function () {
+        $this->noop = static function (): void {
         };
     }
 
-    public function testSimple()
+    public function testSimple(): void
     {
         $eManager = new EventManager();
 
@@ -45,7 +38,7 @@ class NamespacesTest extends PHPUnit
         is(1, $eManager->trigger('save'));
     }
 
-    public function testSimpleParts()
+    public function testSimpleParts(): void
     {
         $eManager = new EventManager();
 
@@ -65,7 +58,7 @@ class NamespacesTest extends PHPUnit
         is(0, $eManager->trigger('item.saved'));
     }
 
-    public function testAnyPart()
+    public function testAnyPart(): void
     {
         $eManager = new EventManager();
 
@@ -78,7 +71,7 @@ class NamespacesTest extends PHPUnit
         is(0, $eManager->trigger('item.save.after.really.deep'));
     }
 
-    public function testAnyPart2()
+    public function testAnyPart2(): void
     {
         $eManager = new EventManager();
 
@@ -92,7 +85,7 @@ class NamespacesTest extends PHPUnit
         is(0, $eManager->trigger('item.save.after.really.deep'));
     }
 
-    public function testAnyPart3()
+    public function testAnyPart3(): void
     {
         $eManager = new EventManager();
 
@@ -105,7 +98,7 @@ class NamespacesTest extends PHPUnit
         is(0, $eManager->trigger('item.save.after.really.deep'));
     }
 
-    public function testAnyPart4()
+    public function testAnyPart4(): void
     {
         $eManager = new EventManager();
 
@@ -118,7 +111,7 @@ class NamespacesTest extends PHPUnit
         is(0, $eManager->trigger('item.save.after.really.deep'));
     }
 
-    public function testAnyPart5()
+    public function testAnyPart5(): void
     {
         $eManager = new EventManager();
 
@@ -134,19 +127,19 @@ class NamespacesTest extends PHPUnit
         is(0, $eManager->trigger('item.load.after.really.deep.name'));
     }
 
-    public function testComplex()
+    public function testComplex(): void
     {
         $eManager = new EventManager();
 
-        $eManager->on('item.*', function () {
+        $eManager->on('item.*', static function (): void {
         });
-        $eManager->on('*.init', function () {
+        $eManager->on('*.init', static function (): void {
         });
-        $eManager->on('*.save', function () {
+        $eManager->on('*.save', static function (): void {
         });
-        $eManager->on('*.save.after', function () {
+        $eManager->on('*.save.after', static function (): void {
         });
-        $eManager->on(['tag.*.*', 'item.*.*'], function () {
+        $eManager->on(['tag.*.*', 'item.*.*'], static function (): void {
         });
 
         is(1, $eManager->trigger('tag.init'));
@@ -160,7 +153,7 @@ class NamespacesTest extends PHPUnit
         is(2, $eManager->trigger('item.save.after'));
     }
 
-    public function testComplex2()
+    public function testComplex2(): void
     {
         $eManager = new EventManager();
 

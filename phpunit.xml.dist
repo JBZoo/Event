@@ -1,15 +1,14 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!--
-    JBZoo Toolbox - Event
+    JBZoo Toolbox - Event.
 
     This file is part of the JBZoo Toolbox project.
     For the full copyright and license information, please view the LICENSE
     file that was distributed with this source code.
 
-    @package    Event
     @license    MIT
     @copyright  Copyright (C) JBZoo.com, All rights reserved.
-    @link       https://github.com/JBZoo/Event
+    @see        https://github.com/JBZoo/Event
 -->
 <phpunit xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          bootstrap="tests/autoload.php"
@@ -24,14 +23,16 @@
          stopOnIncomplete="false"
          stopOnSkipped="false"
          stopOnRisky="false"
+         colors="true"
          xsi:noNamespaceSchemaLocation="https://schema.phpunit.de/9.3/phpunit.xsd"
 >
-    <coverage processUncoveredFiles="true">
+    <coverage>
         <include>
             <directory suffix=".php">src</directory>
         </include>
         <report>
             <clover outputFile="build/coverage_xml/main.xml"/>
+            <html outputDirectory="build/coverage_html" lowUpperBound="75" highLowerBound="95"/>
             <php outputFile="build/coverage_cov/main.cov"/>
             <text outputFile="php://stdout" showUncoveredFiles="false" showOnlySummary="true"/>
         </report>

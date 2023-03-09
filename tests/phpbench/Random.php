@@ -1,16 +1,15 @@
 <?php
 
 /**
- * JBZoo Toolbox - Event
+ * JBZoo Toolbox - Event.
  *
  * This file is part of the JBZoo Toolbox project.
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  *
- * @package    Event
  * @license    MIT
  * @copyright  Copyright (C) JBZoo.com, All rights reserved.
- * @link       https://github.com/JBZoo/Event
+ * @see        https://github.com/JBZoo/Event
  */
 
 declare(strict_types=1);
@@ -18,48 +17,45 @@ declare(strict_types=1);
 use JBZoo\Event\EventManager;
 
 /**
- * Class Random
  * @BeforeMethods({"init"})
  * @Revs(100000)
  * @Iterations(10)
  */
 class Random
 {
-    /**
-     * @var EventManager
-     */
+    /** @var EventManager */
     private $eManager;
 
     /**
      * @noinspection PhpUnhandledExceptionInspection
      */
-    public function init()
+    public function init(): void
     {
         $this->eManager = new EventManager();
-        $parts = ['foo', 'bar', 'woo', 'bazz', '*', '*', '*'];
+        $parts          = ['foo', 'bar', 'woo', 'bazz', '*', '*', '*'];
 
         for ($i = 0; $i < 10; $i++) {
-            shuffle($parts);
-            $partsRand = implode('.', array_slice($parts, 0, random_int(1, count($parts))));
+            \shuffle($parts);
+            $partsRand = \implode('.', \array_slice($parts, 0, \random_int(1, \count($parts))));
 
             if ($partsRand === '*') {
                 $partsRand .= '.foo';
             }
 
-            $this->eManager->on($partsRand, function () {
+            $this->eManager->on($partsRand, static function (): void {
                 // noop
-            }, random_int(0,     $i));
+            }, \random_int(0, $i));
         }
     }
 
     /**
      * @Groups({"random.*.triggers"})
      */
-    public function benchOneSimple()
+    public function benchOneSimple(): void
     {
         $parts = ['foo', 'bar', 'woo', 'bazz'];
-        shuffle($parts);
-        $partsRand = implode('.', array_slice($parts, 0, random_int(1, count($parts))));
+        \shuffle($parts);
+        $partsRand = \implode('.', \array_slice($parts, 0, \random_int(1, \count($parts))));
 
         $this->eManager->trigger($partsRand);
     }

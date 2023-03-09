@@ -1,26 +1,21 @@
 <?php
 
 /**
- * JBZoo Toolbox - Event
+ * JBZoo Toolbox - Event.
  *
  * This file is part of the JBZoo Toolbox project.
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  *
- * @package    Event
  * @license    MIT
  * @copyright  Copyright (C) JBZoo.com, All rights reserved.
- * @link       https://github.com/JBZoo/Event
+ * @see        https://github.com/JBZoo/Event
  */
 
 declare(strict_types=1);
 
 namespace JBZoo\Event;
 
-/**
- * Class EventManager
- * @package JBZoo\Event
- */
 final class EventManager
 {
     public const LOWEST  = 0;
@@ -29,29 +24,17 @@ final class EventManager
     public const HIGH    = 500;
     public const HIGHEST = 1000;
 
-    /**
-     * @var EventManager|null
-     */
-    protected static ?EventManager $defaultManager = null;
+    private static ?EventManager $defaultManager = null;
 
-    /**
-     * The list of listeners
-     * @var array
-     */
-    protected array $list = [];
+    /** The list of listeners. */
+    private array $list = [];
 
     /**
      * Subscribe to an event.
-     *
      * @param string|string[] $eventNames
-     * @param callable        $callback
-     * @param int             $priority
-     * @return $this
-     * @throws Exception
-     *
      * @SuppressWarnings(PHPMD.ShortMethodName)
      */
-    public function on($eventNames, callable $callback, int $priority = self::MID): self
+    public function on(array|string $eventNames, callable $callback, int $priority = self::MID): self
     {
         $eventNames = (array)$eventNames;
 
@@ -70,12 +53,6 @@ final class EventManager
 
     /**
      * Subscribe to an event only once.
-     *
-     * @param string   $eventName
-     * @param callable $callback
-     * @param int      $priority
-     * @return $this
-     * @throws Exception
      */
     public function once(string $eventName, callable $callback, int $priority = self::MID): self
     {
@@ -86,7 +63,8 @@ final class EventManager
         /** @psalm-suppress MissingClosureReturnType */
         $wrapper = function () use ($eventName, $callback, &$wrapper) {
             $this->removeListener($eventName, $wrapper);
-            return \call_user_func_array($callback, \func_get_args());
+
+            return $callback(...\func_get_args());
         };
 
         return $this->on($eventName, $wrapper, $priority);
@@ -112,83 +90,19 @@ final class EventManager
      *
      * Lastly, if there are 5 event handlers for an event. The continueCallback
      * will be called at most 4 times.
-     *
-     * @param string        $eventName
-     * @param array         $arguments
-     * @param callable|null $continueCallback
-     * @return int
-     * @throws Exception
      */
     public function trigger(string $eventName, array $arguments = [], ?callable $continueCallback = null): int
     {
-        $listeners = $this->getList($eventName);
+        $listeners   = $this->getList($eventName);
         $arguments[] = self::cleanEventName($eventName);
 
         return self::callListenersWithCallback($listeners, $arguments, $continueCallback);
     }
 
     /**
-     * Call list of listeners with continue callback function
-     *
-     * @param callable[]    $listeners
-     * @param array         $arguments
-     * @param callable|null $continueCallback
-     * @return int
-     */
-    protected static function callListenersWithCallback(
-        array $listeners,
-        array $arguments = [],
-        callable $continueCallback = null
-    ): int {
-        $counter = \count($listeners);
-        $execCounter = 0;
-
-        foreach ($listeners as $listener) {
-            $counter--;
-
-            $result = self::callOneListener($listener, $arguments);
-            if (!$result) {
-                return $execCounter;
-            }
-
-            $execCounter++;
-
-            if (null !== $continueCallback && $counter > 0 && !$continueCallback()) {
-                break;
-            }
-        }
-
-        return $execCounter;
-    }
-
-    /**
-     * Call list of listeners
-     *
-     * @param callable $listener
-     * @param array    $arguments
-     * @return bool
-     * @phan-suppress PhanUnusedVariableCaughtException
-     */
-    protected static function callOneListener(callable $listener, array $arguments = []): bool
-    {
-        try {
-            \call_user_func_array($listener, $arguments);
-        } catch (ExceptionStop $exception) {
-            return false;
-        }
-
-        return true;
-    }
-
-    /**
      * Returns the list of listeners for an event.
-     *
-     * The list is returned as an array, and the list of events are sorted by
-     * their priority.
-     *
-     * @param string $eventName
+     * The list is returned as an array, and the list of events are sorted by their priority.
      * @return callable[]
-     * @throws Exception
      */
     public function getList(string $eventName): array
     {
@@ -202,7 +116,7 @@ final class EventManager
             if ($eName === $eventName) {
                 /** @noinspection SlowArrayOperationsInLoopInspection */
                 $result = \array_merge($result, $eData);
-            } elseif (\strpos($eName, '*') !== false) {
+            } elseif (\str_contains($eName, '*')) {
                 $eNameParts = \explode('.', $eName);
                 if (self::isContainPart($eNameParts, $ePaths)) {
                     /** @noinspection SlowArrayOperationsInLoopInspection */
@@ -213,22 +127,19 @@ final class EventManager
 
         if (\count($result) > 0) {
             /**
-             * @param array $item1
-             * @param array $item2
+             * @param  array $item1
+             * @param  array $item2
              * @return int
              */
-            $sortFunc = static function (array $item1, array $item2): int {
-                return (int)$item2[0] - (int)$item1[0];
-            };
+            $sortFunc = static fn (array $item1, array $item2): int => (int)$item2[0] - (int)$item1[0];
             \usort($result, $sortFunc); // Sorting by priority
 
             /**
-             * @param array $item
+             * @param  array    $item
              * @return callable
              */
-            $mapFunc = static function (array $item): callable {
-                return $item[1];
-            };
+            $mapFunc = static fn (array $item): callable => $item[1];
+
             return \array_map($mapFunc, $result);
         }
 
@@ -236,42 +147,9 @@ final class EventManager
     }
 
     /**
-     * Check is one part name contain another one
-     *
-     * @param array $eNameParts
-     * @param array $ePaths
-     * @return bool
-     */
-    protected static function isContainPart(array $eNameParts, array $ePaths): bool
-    {
-        // Length of parts is equals
-        if (\count($eNameParts) !== \count($ePaths)) {
-            return false;
-        }
-
-        $isFound = true;
-
-        foreach ($eNameParts as $pos => $eNamePart) {
-            if ('*' !== $eNamePart && \array_key_exists($pos, $ePaths) && $ePaths[$pos] !== $eNamePart) {
-                $isFound = false;
-                break;
-            }
-        }
-
-        return $isFound;
-    }
-
-    /**
      * Removes a specific listener from an event.
-     *
      * If the listener could not be found, this method will return false. If it
      * was removed it will return true.
-     *
-     * @param string        $eventName
-     * @param callable|null $listener
-     * @return bool
-     *
-     * @throws Exception
      */
     public function removeListener(string $eventName, ?callable $listener = null): bool
     {
@@ -284,6 +162,7 @@ final class EventManager
         foreach ($this->list[$eventName] as $index => $eventData) {
             if ($eventData[1] === $listener) {
                 unset($this->list[$eventName][$index]);
+
                 return true;
             }
         }
@@ -293,34 +172,37 @@ final class EventManager
 
     /**
      * Removes all listeners.
-     *
      * If the eventName argument is specified, all listeners for that event are
-     * removed. If it is not specified, every listener for every event is
-     * removed.
-     *
-     * @param string|null $eventName
-     * @return void
-     * @throws Exception
+     * removed. If it is not specified, every listener for every event is removed.
      */
     public function removeListeners(?string $eventName = null): void
     {
-        if (null !== $eventName) {
+        if ($eventName !== null) {
             $eventName = self::cleanEventName($eventName);
         }
 
-        if ($eventName) {
+        if ($eventName !== null && $eventName !== '') {
             unset($this->list[$eventName]);
         } else {
             $this->list = [];
         }
     }
 
+    public function getSummeryInfo(): array
+    {
+        $result = [];
+
+        foreach ($this->list as $eventName => $callbacks) {
+            $result[$eventName] = \count($callbacks);
+        }
+
+        \ksort($result);
+
+        return $result;
+    }
+
     /**
-     * Prepare event name before using
-     *
-     * @param string $eventName
-     * @return string
-     * @throws Exception
+     * Prepare event name before using.
      */
     public static function cleanEventName(string $eventName): string
     {
@@ -329,41 +211,86 @@ final class EventManager
         $eventName = \trim($eventName, '.');
         $eventName = \trim($eventName);
 
-        if (!$eventName) {
+        if ($eventName === '') {
             throw new Exception('Event name is empty!');
         }
 
         return $eventName;
     }
 
-    /**
-     * @param EventManager $eManager
-     */
-    public static function setDefault(EventManager $eManager): void
+    public static function setDefault(self $eManager): void
     {
         self::$defaultManager = $eManager;
     }
 
-    /**
-     * @return EventManager|null
-     */
-    public static function getDefault(): ?EventManager
+    public static function getDefault(): ?self
     {
         return self::$defaultManager;
     }
 
     /**
-     * @return array
+     * Call list of listeners with continue callback function.
+     * @param callable[] $listeners
      */
-    public function getSummeryInfo(): array
-    {
-        $result = [];
-        foreach ($this->list as $eventName => $callbacks) {
-            $result[$eventName] = \count($callbacks);
+    private static function callListenersWithCallback(
+        array $listeners,
+        array $arguments = [],
+        ?callable $continueCallback = null,
+    ): int {
+        $counter     = \count($listeners);
+        $execCounter = 0;
+
+        foreach ($listeners as $listener) {
+            $counter--;
+
+            $result = self::callOneListener($listener, $arguments);
+            if (!$result) {
+                return $execCounter;
+            }
+
+            $execCounter++;
+
+            if ($continueCallback !== null && $counter > 0 && !$continueCallback()) {
+                break;
+            }
         }
 
-        \ksort($result);
+        return $execCounter;
+    }
 
-        return $result;
+    /**
+     * Call list of listeners.
+     */
+    private static function callOneListener(callable $listener, array $arguments = []): bool
+    {
+        try {
+            $listener(...$arguments);
+        } catch (ExceptionStop) {
+            return false;
+        }
+
+        return true;
+    }
+
+    /**
+     * Check is one part name contain another one.
+     */
+    private static function isContainPart(array $eNameParts, array $ePaths): bool
+    {
+        // Length of parts is equals
+        if (\count($eNameParts) !== \count($ePaths)) {
+            return false;
+        }
+
+        $isFound = true;
+
+        foreach ($eNameParts as $pos => $eNamePart) {
+            if ($eNamePart !== '*' && \array_key_exists($pos, $ePaths) && $ePaths[$pos] !== $eNamePart) {
+                $isFound = false;
+                break;
+            }
+        }
+
+        return $isFound;
     }
 }
