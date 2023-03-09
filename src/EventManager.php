@@ -34,7 +34,7 @@ final class EventManager
      * @param string|string[] $eventNames
      * @SuppressWarnings(PHPMD.ShortMethodName)
      */
-    public function on($eventNames, callable $callback, int $priority = self::MID): self
+    public function on(array|string $eventNames, callable $callback, int $priority = self::MID): self
     {
         $eventNames = (array)$eventNames;
 
@@ -260,13 +260,12 @@ final class EventManager
 
     /**
      * Call list of listeners.
-     * @phan-suppress PhanUnusedVariableCaughtException
      */
     private static function callOneListener(callable $listener, array $arguments = []): bool
     {
         try {
             $listener(...$arguments);
-        } catch (ExceptionStop $exception) {
+        } catch (ExceptionStop) {
             return false;
         }
 
