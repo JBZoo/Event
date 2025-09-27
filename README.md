@@ -1,6 +1,6 @@
 # JBZoo / Event
 
-[![CI](https://github.com/JBZoo/Event/actions/workflows/main.yml/badge.svg?branch=master)](https://github.com/JBZoo/Event/actions/workflows/main.yml?query=branch%3Amaster)    [![Coverage Status](https://coveralls.io/repos/github/JBZoo/Event/badge.svg?branch=master)](https://coveralls.io/github/JBZoo/Event?branch=master)    [![Psalm Coverage](https://shepherd.dev/github/JBZoo/Event/coverage.svg)](https://shepherd.dev/github/JBZoo/Event)    [![Psalm Level](https://shepherd.dev/github/JBZoo/Event/level.svg)](https://shepherd.dev/github/JBZoo/Event)    [![CodeFactor](https://www.codefactor.io/repository/github/jbzoo/event/badge)](https://www.codefactor.io/repository/github/jbzoo/event/issues)    
+[![CI](https://github.com/JBZoo/Event/actions/workflows/main.yml/badge.svg?branch=master)](https://github.com/JBZoo/Event/actions/workflows/main.yml?query=branch%3Amaster)    [![Coverage Status](https://coveralls.io/repos/github/JBZoo/Event/badge.svg?branch=master)](https://coveralls.io/github/JBZoo/Event?branch=master)    [![Psalm Coverage](https://shepherd.dev/github/JBZoo/Event/coverage.svg)](https://shepherd.dev/github/JBZoo/Event)    [![Psalm Level](https://shepherd.dev/github/JBZoo/Event/level.svg)](https://shepherd.dev/github/JBZoo/Event)    [![CodeFactor](https://www.codefactor.io/repository/github/jbzoo/event/badge)](https://www.codefactor.io/repository/github/jbzoo/event/issues)
 [![Stable Version](https://poser.pugx.org/jbzoo/event/version)](https://packagist.org/packages/jbzoo/event/)    [![Total Downloads](https://poser.pugx.org/jbzoo/event/downloads)](https://packagist.org/packages/jbzoo/event/stats)    [![Dependents](https://poser.pugx.org/jbzoo/event/dependents)](https://packagist.org/packages/jbzoo/event/dependents?order_by=downloads)    [![GitHub License](https://img.shields.io/github/license/jbzoo/event)](https://github.com/JBZoo/Event/blob/master/LICENSE)
 
 
@@ -137,14 +137,14 @@ $eManager->trigger('item.save.after');
 ## Summary benchmark info (execution time) PHP v7.4
 All benchmark tests are executing without xdebug and with a huge random array and 100.000 iterations.
 
-Benchmark tests based on the tool [phpbench/phpbench](https://github.com/phpbench/phpbench). See details [here](tests/phpbench).   
+Benchmark tests based on the tool [phpbench/phpbench](https://github.com/phpbench/phpbench). See details [here](tests/phpbench).
 
 Please, pay attention - `1μs = 1/1.000.000 of second!`
 
 **benchmark: ManyCallbacks**
 
 subject | groups | its | revs | mean | stdev | rstdev | mem_real | diff
- --- | --- | --- | --- | --- | --- | --- | --- | --- 
+ --- | --- | --- | --- | --- | --- | --- | --- | ---
 benchOneUndefined | undefined | 10 | 100000 | 0.65μs | 0.01μs | 1.00% | 6,291,456b | 1.00x
 benchOneWithStarBegin | *.bar | 10 | 100000 | 0.67μs | 0.01μs | 1.44% | 6,291,456b | 1.04x
 benchOneWithAllStars | \*.\* | 10 | 100000 | 0.68μs | 0.03μs | 4.18% | 6,291,456b | 1.04x
@@ -155,7 +155,7 @@ benchOneSimple | foo | 10 | 100000 | 45.07μs | 2.63μs | 5.83% | 6,291,456b | 6
 **benchmark: ManyCallbacksWithPriority**
 
 subject | groups | its | revs | mean | stdev | rstdev | mem_real | diff
- --- | --- | --- | --- | --- | --- | --- | --- | --- 
+ --- | --- | --- | --- | --- | --- | --- | --- | ---
 benchOneUndefined | undefined | 10 | 100000 | 0.65μs | 0.01μs | 1.35% | 6,291,456b | 1.00x
 benchOneNestedStarAll | \*.\* | 10 | 100000 | 0.67μs | 0.01μs | 1.34% | 6,291,456b | 1.03x
 benchOneWithStarBegin | *.bar | 10 | 100000 | 0.67μs | 0.01μs | 1.10% | 6,291,456b | 1.04x
@@ -166,7 +166,7 @@ benchOneNested | foo.bar | 10 | 100000 | 4.58μs | 0.04μs | 0.81% | 6,291,456b 
 **benchmark: OneCallback**
 
 subject | groups | its | revs | mean | stdev | rstdev | mem_real | diff
- --- | --- | --- | --- | --- | --- | --- | --- | --- 
+ --- | --- | --- | --- | --- | --- | --- | --- | ---
 benchOneWithStarBegin | *.bar | 10 | 100000 | 0.69μs | 0.03μs | 4.00% | 6,291,456b | 1.00x
 benchOneWithStarEnd | foo.* | 10 | 100000 | 0.70μs | 0.03μs | 4.22% | 6,291,456b | 1.00x
 benchOneNestedStarAll | \*.\* | 10 | 100000 | 0.70μs | 0.04μs | 6.02% | 6,291,456b | 1.01x
@@ -177,7 +177,7 @@ benchOneNested | foo.bar | 10 | 100000 | 1.25μs | 0.03μs | 2.46% | 6,291,456b 
 **benchmark: Random**
 
 subject | groups | its | revs | mean | stdev | rstdev | mem_real | diff
- --- | --- | --- | --- | --- | --- | --- | --- | --- 
+ --- | --- | --- | --- | --- | --- | --- | --- | ---
 benchOneSimple | random.*.triggers | 10 | 100000 | 4.29μs | 0.33μs | 7.69% | 6,291,456b | 1.00x
 
 

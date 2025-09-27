@@ -58,8 +58,6 @@ final class EventManager
     {
         $eventName = self::cleanEventName($eventName);
 
-        $wrapper = null;
-
         /** @psalm-suppress MissingClosureReturnType */
         $wrapper = function () use ($eventName, $callback, &$wrapper) {
             $this->removeListener($eventName, $wrapper);
@@ -150,6 +148,7 @@ final class EventManager
      * Removes a specific listener from an event.
      * If the listener could not be found, this method will return false. If it
      * was removed it will return true.
+     * @psalm-suppress PossiblyUnusedReturnValue
      */
     public function removeListener(string $eventName, ?callable $listener = null): bool
     {

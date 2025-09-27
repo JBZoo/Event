@@ -16,6 +16,9 @@ declare(strict_types=1);
 
 namespace JBZoo\Event;
 
-class ExceptionStop extends Exception
+/**
+ * @psalm-suppress UnusedClass
+ */
+final class ExceptionStop extends Exception
 {
 }
