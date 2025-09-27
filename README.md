@@ -4,15 +4,27 @@
 [![Stable Version](https://poser.pugx.org/jbzoo/event/version)](https://packagist.org/packages/jbzoo/event/)    [![Total Downloads](https://poser.pugx.org/jbzoo/event/downloads)](https://packagist.org/packages/jbzoo/event/stats)    [![Dependents](https://poser.pugx.org/jbzoo/event/dependents)](https://packagist.org/packages/jbzoo/event/dependents?order_by=downloads)    [![GitHub License](https://img.shields.io/github/license/jbzoo/event)](https://github.com/JBZoo/Event/blob/master/LICENSE)
 
 
-The EventEmitter is a simple pattern that allows you to create an object that emits events, and allow you to listen to those events.
+A lightweight PHP event manager library that provides a simple yet powerful pattern for event-driven development. Create objects that emit events and register listeners to handle them with support for priorities, namespaces, and wildcard matching.
 
-### Install
+## Features
+
+- **Priority-based event handling** - Control execution order with built-in priority levels
+- **Namespace support with wildcards** - Listen to `item.*`, `*.save`, or `*.*` patterns
+- **Multiple callback types** - Closures, functions, static methods, and object methods
+- **Event propagation control** - Stop event chains with `ExceptionStop`
+- **One-time listeners** - Auto-removing listeners with `once()`
+- **Reference parameter passing** - Communicate between listeners
+- **High performance** - Optimized for speed with comprehensive benchmarks
+- **PHP 8.2+ with strict types** - Modern PHP with full type safety
+
+## Installation
 ```sh
 composer require jbzoo/event
 ```
 
+## Usage
 
-### Simple example
+### Quick Start
 ```php
 use JBZoo\Event\EventManager;
 
@@ -28,7 +40,7 @@ $eManager->trigger('create');
 ```
 
 
-### Set priority
+### Priority-Based Execution
 By supplying a priority, you are ensured that subscribers handle in a specific order. The default priority is EventManager::MID.
 Anything below that will be triggered earlier, anything higher later.
 If there are two subscribers with the same priority, they will execute in an undefined, but deterministic order.
@@ -54,8 +66,8 @@ $eManager->on('create', function () {
 });
 ```
 
-### Types of Callback
-All default PHP callbacks are supported, so closures are not required.
+### Callback Types
+All standard PHP callable types are supported:
 ```php
 $eManager->on('create', function(){ /* ... */ }); // Custom function
 $eManager->on('create', 'myFunction');            // Custom function name
@@ -64,7 +76,7 @@ $eManager->on('create', [$object, 'Method']);     // Method of instance
 ```
 
 
-###  Cancel queue of events
+### Event Propagation Control
 ```php
 use JBZoo\Event\ExceptionStop;
 
@@ -72,12 +84,12 @@ $eManager->on('create', function () {
     throw new ExceptionStop('Some reason'); // Special exception for JBZoo/Event
 });
 
-$eManager->trigger('create'); // return 'Some reason' or TRUE if all events done
+$eManager->trigger('create'); // Returns count of executed listeners
 ```
 
 
-### Passing arguments
-Arguments can be passed as an array.
+### Passing Arguments
+Event data can be passed to listeners as function arguments:
 ```php
 $eManager->on('create', function ($entityId) {
     echo "An entity with id ", $entityId, " just got created.\n";
@@ -96,7 +108,8 @@ $warnings = [];
 $eManager->trigger('create', [$entityId, &$warnings]);
 ```
 
-### Namespaces
+### Namespace Wildcards
+Use wildcards to listen to multiple related events:
 ```php
 $eManager->on('item.*', function () {
     // item.init
@@ -133,60 +146,102 @@ $eManager->trigger('item.save');
 $eManager->trigger('item.save.after');
 ```
 
+### One-Time Listeners
+For events that should only be handled once:
+```php
+$eManager->once('app.init', function () {
+    echo "This will only run once, then auto-remove itself";
+});
 
-## Summary benchmark info (execution time) PHP v7.4
-All benchmark tests are executing without xdebug and with a huge random array and 100.000 iterations.
+$eManager->trigger('app.init'); // Executes
+$eManager->trigger('app.init'); // Does nothing - listener was removed
+```
 
-Benchmark tests based on the tool [phpbench/phpbench](https://github.com/phpbench/phpbench). See details [here](tests/phpbench).
+### Advanced Usage
+```php
+use JBZoo\Event\EventManager;
 
-Please, pay attention - `1μs = 1/1.000.000 of second!`
+// Create a global event manager
+EventManager::setDefault(new EventManager());
+$globalManager = EventManager::getDefault();
+
+// Get summary of registered events
+$summary = $eManager->getSummeryInfo();
+// Returns: ['user.create' => 3, 'user.update' => 1, ...]
+
+// Remove specific listeners
+$callback = function() { echo "test"; };
+$eManager->on('test', $callback);
+$eManager->removeListener('test', $callback);
+
+// Remove all listeners for an event
+$eManager->removeListeners('test');
+
+// Remove ALL listeners
+$eManager->removeListeners();
+```
+
+
+## Performance Benchmarks
+
+Extensive performance testing with 100,000 iterations shows excellent performance characteristics.
+Benchmark tests use [phpbench/phpbench](https://github.com/phpbench/phpbench) - see detailed results in [`tests/phpbench`](tests/phpbench).
+
+> **Note:** `1μs = 1/1,000,000 of a second` - these are microseconds!
 
 **benchmark: ManyCallbacks**
 
-subject | groups | its | revs | mean | stdev | rstdev | mem_real | diff
- --- | --- | --- | --- | --- | --- | --- | --- | ---
-benchOneUndefined | undefined | 10 | 100000 | 0.65μs | 0.01μs | 1.00% | 6,291,456b | 1.00x
-benchOneWithStarBegin | *.bar | 10 | 100000 | 0.67μs | 0.01μs | 1.44% | 6,291,456b | 1.04x
-benchOneWithAllStars | \*.\* | 10 | 100000 | 0.68μs | 0.03μs | 4.18% | 6,291,456b | 1.04x
-benchOneWithStarEnd | foo.* | 10 | 100000 | 0.68μs | 0.01μs | 1.24% | 6,291,456b | 1.04x
-benchOneNested | foo.bar | 10 | 100000 | 43.23μs | 0.46μs | 1.07% | 6,291,456b | 66.56x
-benchOneSimple | foo | 10 | 100000 | 45.07μs | 2.63μs | 5.83% | 6,291,456b | 69.39x
+| subject | groups | its | revs | mean | stdev | rstdev | mem_real | diff |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| benchOneUndefined | undefined | 10 | 100000 | 0.65μs | 0.01μs | 1.00% | 6,291,456b | 1.00x |
+| benchOneWithStarBegin | *.bar | 10 | 100000 | 0.67μs | 0.01μs | 1.44% | 6,291,456b | 1.04x |
+| benchOneWithAllStars | \*.\* | 10 | 100000 | 0.68μs | 0.03μs | 4.18% | 6,291,456b | 1.04x |
+| benchOneWithStarEnd | foo.* | 10 | 100000 | 0.68μs | 0.01μs | 1.24% | 6,291,456b | 1.04x |
+| benchOneNested | foo.bar | 10 | 100000 | 43.23μs | 0.46μs | 1.07% | 6,291,456b | 66.56x |
+| benchOneSimple | foo | 10 | 100000 | 45.07μs | 2.63μs | 5.83% | 6,291,456b | 69.39x |
 
 **benchmark: ManyCallbacksWithPriority**
 
-subject | groups | its | revs | mean | stdev | rstdev | mem_real | diff
- --- | --- | --- | --- | --- | --- | --- | --- | ---
-benchOneUndefined | undefined | 10 | 100000 | 0.65μs | 0.01μs | 1.35% | 6,291,456b | 1.00x
-benchOneNestedStarAll | \*.\* | 10 | 100000 | 0.67μs | 0.01μs | 1.34% | 6,291,456b | 1.03x
-benchOneWithStarBegin | *.bar | 10 | 100000 | 0.67μs | 0.01μs | 1.10% | 6,291,456b | 1.04x
-benchOneWithStarEnd | foo.* | 10 | 100000 | 0.68μs | 0.01μs | 1.13% | 6,291,456b | 1.05x
-benchOneSimple | foo | 10 | 100000 | 4.54μs | 0.02μs | 0.35% | 6,291,456b | 7.03x
-benchOneNested | foo.bar | 10 | 100000 | 4.58μs | 0.04μs | 0.81% | 6,291,456b | 7.10x
+| subject | groups | its | revs | mean | stdev | rstdev | mem_real | diff |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| benchOneUndefined | undefined | 10 | 100000 | 0.65μs | 0.01μs | 1.35% | 6,291,456b | 1.00x |
+| benchOneNestedStarAll | \*.\* | 10 | 100000 | 0.67μs | 0.01μs | 1.34% | 6,291,456b | 1.03x |
+| benchOneWithStarBegin | *.bar | 10 | 100000 | 0.67μs | 0.01μs | 1.10% | 6,291,456b | 1.04x |
+| benchOneWithStarEnd | foo.* | 10 | 100000 | 0.68μs | 0.01μs | 1.13% | 6,291,456b | 1.05x |
+| benchOneSimple | foo | 10 | 100000 | 4.54μs | 0.02μs | 0.35% | 6,291,456b | 7.03x |
+| benchOneNested | foo.bar | 10 | 100000 | 4.58μs | 0.04μs | 0.81% | 6,291,456b | 7.10x |
 
 **benchmark: OneCallback**
 
-subject | groups | its | revs | mean | stdev | rstdev | mem_real | diff
- --- | --- | --- | --- | --- | --- | --- | --- | ---
-benchOneWithStarBegin | *.bar | 10 | 100000 | 0.69μs | 0.03μs | 4.00% | 6,291,456b | 1.00x
-benchOneWithStarEnd | foo.* | 10 | 100000 | 0.70μs | 0.03μs | 4.22% | 6,291,456b | 1.00x
-benchOneNestedStarAll | \*.\* | 10 | 100000 | 0.70μs | 0.04μs | 6.02% | 6,291,456b | 1.01x
-benchOneUndefined | undefined | 10 | 100000 | 0.71μs | 0.05μs | 7.44% | 6,291,456b | 1.02x
-benchOneSimple | foo | 10 | 100000 | 1.18μs | 0.03μs | 2.27% | 6,291,456b | 1.70x
-benchOneNested | foo.bar | 10 | 100000 | 1.25μs | 0.03μs | 2.46% | 6,291,456b | 1.81x
+| subject | groups | its | revs | mean | stdev | rstdev | mem_real | diff |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| benchOneWithStarBegin | *.bar | 10 | 100000 | 0.69μs | 0.03μs | 4.00% | 6,291,456b | 1.00x |
+| benchOneWithStarEnd | foo.* | 10 | 100000 | 0.70μs | 0.03μs | 4.22% | 6,291,456b | 1.00x |
+| benchOneNestedStarAll | \*.\* | 10 | 100000 | 0.70μs | 0.04μs | 6.02% | 6,291,456b | 1.01x |
+| benchOneUndefined | undefined | 10 | 100000 | 0.71μs | 0.05μs | 7.44% | 6,291,456b | 1.02x |
+| benchOneSimple | foo | 10 | 100000 | 1.18μs | 0.03μs | 2.27% | 6,291,456b | 1.70x |
+| benchOneNested | foo.bar | 10 | 100000 | 1.25μs | 0.03μs | 2.46% | 6,291,456b | 1.81x |
 
 **benchmark: Random**
 
-subject | groups | its | revs | mean | stdev | rstdev | mem_real | diff
- --- | --- | --- | --- | --- | --- | --- | --- | ---
-benchOneSimple | random.*.triggers | 10 | 100000 | 4.29μs | 0.33μs | 7.69% | 6,291,456b | 1.00x
+| subject | groups | its | revs | mean | stdev | rstdev | mem_real | diff |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| benchOneSimple | random.*.triggers | 10 | 100000 | 4.29μs | 0.33μs | 7.69% | 6,291,456b | 1.00x |
 
 
-## Unit tests and check code style
-```sh
-make update
-make test-all
+## Development
+
+### Setup
+```bash
+make update  # Install dependencies
 ```
 
+### Testing
+```bash
+make test      # Run PHPUnit tests
+make test-all  # Run tests + code style checks
+make codestyle # Run all linters
+```
 
 ## License
 
