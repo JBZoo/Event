@@ -76,9 +76,7 @@ class EventTest extends PHPUnit
         is([$callback2, $callback1], $eManager->getList('foo'));
     }
 
-    /**
-     * @depends testInit
-     */
+    #[\PHPUnit\Framework\Attributes\Depends('testInit')]
     public function testHandleEvent(): void
     {
         $argResult = null;
@@ -92,9 +90,7 @@ class EventTest extends PHPUnit
         is('bar', $argResult);
     }
 
-    /**
-     * @depends testHandleEvent
-     */
+    #[\PHPUnit\Framework\Attributes\Depends('testHandleEvent')]
     public function testCancelEvent(): void
     {
         $argResult = 0;
@@ -114,9 +110,7 @@ class EventTest extends PHPUnit
         is(1, $argResult);
     }
 
-    /**
-     * @depends testCancelEvent
-     */
+    #[\PHPUnit\Framework\Attributes\Depends('testCancelEvent')]
     public function testPriority(): void
     {
         $argResult = 0;
@@ -280,9 +274,7 @@ class EventTest extends PHPUnit
         is(1, $result);
     }
 
-    /**
-     * @depends testCancelEvent
-     */
+    #[\PHPUnit\Framework\Attributes\Depends('testCancelEvent')]
     public function testPriorityOnce(): void
     {
         $argResult = 0;
