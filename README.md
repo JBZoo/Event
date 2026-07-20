@@ -1,7 +1,15 @@
 # JBZoo / Event
 
-[![CI](https://github.com/JBZoo/Event/actions/workflows/main.yml/badge.svg?branch=master)](https://github.com/JBZoo/Event/actions/workflows/main.yml?query=branch%3Amaster)    [![Coverage Status](https://coveralls.io/repos/github/JBZoo/Event/badge.svg?branch=master)](https://coveralls.io/github/JBZoo/Event?branch=master)    [![Psalm Coverage](https://shepherd.dev/github/JBZoo/Event/coverage.svg)](https://shepherd.dev/github/JBZoo/Event)    [![Psalm Level](https://shepherd.dev/github/JBZoo/Event/level.svg)](https://shepherd.dev/github/JBZoo/Event)    [![CodeFactor](https://www.codefactor.io/repository/github/jbzoo/event/badge)](https://www.codefactor.io/repository/github/jbzoo/event/issues)
-[![Stable Version](https://poser.pugx.org/jbzoo/event/version)](https://packagist.org/packages/jbzoo/event/)    [![Total Downloads](https://poser.pugx.org/jbzoo/event/downloads)](https://packagist.org/packages/jbzoo/event/stats)    [![Dependents](https://poser.pugx.org/jbzoo/event/dependents)](https://packagist.org/packages/jbzoo/event/dependents?order_by=downloads)    [![GitHub License](https://img.shields.io/github/license/jbzoo/event)](https://github.com/JBZoo/Event/blob/master/LICENSE)
+[![CI](https://github.com/JBZoo/Event/actions/workflows/main.yml/badge.svg?branch=master)](https://github.com/JBZoo/Event/actions/workflows/main.yml?query=branch%3Amaster)
+[![Coverage Status](https://coveralls.io/repos/github/JBZoo/Event/badge.svg?branch=master)](https://coveralls.io/github/JBZoo/Event?branch=master)
+[![Psalm Coverage](https://shepherd.dev/github/JBZoo/Event/coverage.svg)](https://shepherd.dev/github/JBZoo/Event)
+[![Psalm Level](https://shepherd.dev/github/JBZoo/Event/level.svg)](https://shepherd.dev/github/JBZoo/Event)
+[![CodeFactor](https://www.codefactor.io/repository/github/jbzoo/event/badge)](https://www.codefactor.io/repository/github/jbzoo/event/issues)
+
+[![Stable Version](https://poser.pugx.org/jbzoo/event/version)](https://packagist.org/packages/jbzoo/event/)
+[![Total Downloads](https://poser.pugx.org/jbzoo/event/downloads)](https://packagist.org/packages/jbzoo/event/stats)
+[![Dependents](https://poser.pugx.org/jbzoo/event/dependents)](https://packagist.org/packages/jbzoo/event/dependents?order_by=downloads)
+[![GitHub License](https://img.shields.io/github/license/jbzoo/event)](https://github.com/JBZoo/Event/blob/master/LICENSE)
 
 
 A lightweight PHP event manager library that provides a simple yet powerful pattern for event-driven development. Create objects that emit events and register listeners to handle them with support for priorities, namespaces, and wildcard matching.
@@ -15,7 +23,7 @@ A lightweight PHP event manager library that provides a simple yet powerful patt
 - **One-time listeners** - Auto-removing listeners with `once()`
 - **Reference parameter passing** - Communicate between listeners
 - **High performance** - Optimized for speed with comprehensive benchmarks
-- **PHP 8.2+ with strict types** - Modern PHP with full type safety
+- **PHP 8.3+ with strict types** - Modern PHP with full type safety
 
 ## Installation
 ```sh
