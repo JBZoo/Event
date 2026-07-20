@@ -23,7 +23,7 @@ A lightweight PHP event manager library that provides a simple yet powerful patt
 - **One-time listeners** - Auto-removing listeners with `once()`
 - **Reference parameter passing** - Communicate between listeners
 - **High performance** - Optimized for speed with comprehensive benchmarks
-- **PHP 8.2+ with strict types** - Modern PHP with full type safety
+- **PHP 8.3+ with strict types** - Modern PHP with full type safety
 
 ## Installation
 ```sh

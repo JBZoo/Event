@@ -79,7 +79,7 @@ Tests are located in `tests/` directory:
 
 ## Code Standards
 
-- PHP 8.2+ required
+- PHP 8.3+ required
 - Strict types declaration (`declare(strict_types=1)`)
 - PSR-12 coding standard
 - Full test coverage expected for new features
